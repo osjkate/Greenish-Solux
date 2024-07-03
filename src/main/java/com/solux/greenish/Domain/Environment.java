@@ -1,8 +1,11 @@
 package com.solux.greenish.Domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Getter
+@NoArgsConstructor
 public class Environment {
 
     @Id @Column(name = "environment_id")

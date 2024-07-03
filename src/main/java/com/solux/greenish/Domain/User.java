@@ -1,11 +1,14 @@
 package com.solux.greenish.Domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter
+@NoArgsConstructor
 public class User {
 
     @Id @Column(name = "user_id")
@@ -16,7 +19,6 @@ public class User {
 
     private String location;
 
-    // 환경 필요한가요..?
     @OneToOne
     private Environment environment;
 
