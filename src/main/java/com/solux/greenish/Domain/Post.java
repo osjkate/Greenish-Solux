@@ -18,9 +18,11 @@ public class Post {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "plant_id")
     private Plant plant;
 
     private String title;
