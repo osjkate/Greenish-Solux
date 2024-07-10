@@ -26,6 +26,7 @@ public class PlantResponse {
     @Data
     public static class Body {
         //xml을 리스트로 감싼다.
+      
         @XmlElementWrapper(name = "items")
         @XmlElement(name ="item")
         private List<Plant> PlantList;

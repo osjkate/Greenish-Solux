@@ -48,6 +48,7 @@ public class PlantService {
     }
 
 
+
     //이름으로 검색하는 경우에 사용하는 메소드
     public PlantResponse.Body.Plant SearchPlantByName(String name) throws Exception {
         String url = baseUrl + "/gardenList?apiKey=" + apiKey + "&sType=sCntntsSj" + "&sText=" + name;
@@ -74,6 +75,5 @@ public class PlantService {
         else {
             return  null;
         }
-
     }
 }

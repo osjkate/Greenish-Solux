@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/plantsearch")
@@ -52,9 +53,22 @@ public class PlantSearchController {
             return new ResponseEntity(null,HttpStatus.NOT_FOUND);
         }
     }
-    
     //필터링
-    /*구현예정*/
+    /*Get방식이 캐싱을 사용할 수 있으므로 get으로 구현*/
+    @GetMapping("/filter")
+
+    public List<PlantResponse.Body.Plant> searchPlantByFilter(@RequestParam  String flclrCodeNm,
+                                                              @RequestParam String growthHgInfo,
+                                                              @RequestParam String  grwhTpCodeNm,
+                                                              @RequestParam String grwtveCodeNm,
+                                                              @RequestParam String hdCodeNm,
+                                                              @RequestParam String managelevelCodeNm,
+                                                              @RequestParam String postngplaceCodeNm
+
+    ){
+        //구현중~
+        return null;
+    }
 
 
     }
