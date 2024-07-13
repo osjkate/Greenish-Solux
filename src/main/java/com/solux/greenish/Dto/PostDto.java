@@ -20,7 +20,7 @@ public class PostDto {
     static public class PostSimpleDto {
         private Long id;
         private String title;
-        private LocalDate date;
+        private LocalDate createdAt;
         private String content;
         private String photo_path;
 
@@ -31,7 +31,7 @@ public class PostDto {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
-            this.date = post.getDate();
+            this.createdAt = post.getCreatedAt();
             this.photo_path = post.getPhoto_path();
         }
     }
@@ -45,7 +45,7 @@ public class PostDto {
         private Long plantId;
         private String title;
         private String content;
-        private LocalDate date;
+        private LocalDate createdAt;
         private String photo_path;
 
         public static PostDetailDto of(Post post) {
@@ -58,7 +58,7 @@ public class PostDto {
             this.plantId = post.getPlant().getId();
             this.title = post.getTitle();
             this.content = post.getContent();
-            this.date = post.getDate();
+            this.createdAt = post.getCreatedAt();
             this.photo_path = post.getPhoto_path();
         }
     }
@@ -72,7 +72,7 @@ public class PostDto {
         private Long plantId;
         private String title;
         private String content;
-        private LocalDate date;
+        private LocalDate createdAt;
         private String photo_path;
         public Post toEntity(User user, Plant plant) {
             return Post.builder()
@@ -80,12 +80,37 @@ public class PostDto {
                     .plant(plant)
                     .title(title)
                     .content(content)
-                    .date(date)
+                    .createdAt(createdAt)
                     .photo_path(photo_path)
                     .build();
         }
     }
 
+    // 정보 수정 Dto
+    @Getter
+    static public class PostModifyDto {
+        private Long plantId;
+        private String title;
+        private String content;
+        private String photo_path;
 
+        @Builder
+        public PostModifyDto(Long plantId, String title, String content, String photo_path) {
+            this.plantId = plantId;
+            this.title = title;
+            this.content = content;
+            this.photo_path = photo_path;
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static public class IdResponse {
+        private Long id;
+        public static IdResponse of(Post post) {
+            return new IdResponse(post.getId());
+        }
+    }
 
 }

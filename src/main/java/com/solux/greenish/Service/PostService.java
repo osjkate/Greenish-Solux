@@ -36,36 +36,60 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailDto getPostDetailById(Long id) {
         return postRepository.findById(id)
-                .map(PostDetailDto::of)
+                .map(PostDetailDto::new)
                 .orElseThrow(()->new IllegalArgumentException("해당 게시물이 존재하지 않습니다. "));
     }
 
     // user의 id로 게시물 전체 조회
     @Transactional(readOnly = true)
-    public List<PostSimpleDto> getAllPostDetailByUserId(Long userId) {
+    public List<PostSimpleDto> getAllPostByUserId(Long userId) {
         return postRepository.findAllByUserId(userId).stream()
                 .map(PostSimpleDto::new).collect(Collectors.toList());
     }
 
     // plant id 로 게시물 전체 조회
     @Transactional(readOnly = true)
-    public List<PostSimpleDto> getAllPostDetailByPlantId(Long plantId) {
+    public List<PostSimpleDto> getAllPostByPlantId(Long plantId) {
         return postRepository.findAllByPlantId(plantId).stream()
                 .map(PostSimpleDto::new).collect(Collectors.toList());
     }
 
+    // 게시물 전체 조회
+    @Transactional(readOnly = true)
+    public List<PostSimpleDto> getAllPost() {
+        List<Post> posts = postRepository.findAll();
+        return posts.stream()
+                .map(PostSimpleDto::new)
+                .collect(Collectors.toList());
+    }
+
     // 게시물 등록
     @Transactional
-    public PostDetailDto postCreatePost(PostCreateDto postDto) {
-
+    public IdResponse postCreate(PostCreateDto postDto) {
         User user = findUserById(postDto.getUserId());
         Plant plant = findPlantById(postDto.getPlantId());
         Post post = postDto.toEntity(user, plant);
         postRepository.save(post);
-        return PostDetailDto.of(post);
+        return IdResponse.of(post);
     }
 
     // 게시물 수정
+    @Transactional
+    public IdResponse postModify(Long id, PostModifyDto request) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. "));
+        Plant plant = plantRepository.findById(request.getPlantId()).get();
+        post.update(plant, request.getTitle(), request.getContent(), request.getPhoto_path());
+        return IdResponse.of(post);
+    }
+
 
     // 게시물 삭제
+    @Transactional
+    public void deletePost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다. "));
+        postRepository.delete(post);
+    }
+
 }

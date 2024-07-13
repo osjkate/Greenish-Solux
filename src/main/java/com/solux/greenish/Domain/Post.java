@@ -29,31 +29,29 @@ public class Post {
 
     private String content;
 
-    private LocalDate date;
+    private LocalDate createdAt;
 
     private String photo_path;
 
     // post 생성 함수
     public static Post createPost(User user, Plant plant, String title,
-                                  String content, LocalDate date, String photo_path){
+                                  String content, LocalDate createdAt, String photo_path){
         return Post.builder()
                 .user(user)
                 .plant(plant)
                 .title(title)
                 .content(content)
-                .date(date)
+                .createdAt(createdAt)
                 .photo_path(photo_path)
                 .build();
     }
 
     // post 수정 함수
-    public void update(User user, Plant plant, String title,
-                       String content, LocalDate date, String photo_path) {
-        this.user = user;
+    public void update( Plant plant, String title,
+                       String content, String photo_path) {
         this.plant = plant;
         this.title = title;
         this.content = content;
-        this.date = date;
         this.photo_path = photo_path;
     }
 

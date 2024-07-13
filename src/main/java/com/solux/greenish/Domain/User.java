@@ -12,7 +12,7 @@ import java.util.List;
 public class User {
 
     @Id @Column(name = "user_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nickname;
@@ -20,6 +20,7 @@ public class User {
     private String location;
 
     @OneToOne
+    @JoinColumn(name = "environment_id")
     private Environment environment;
 
     // 알림 기능 추가 예정
