@@ -1,9 +1,8 @@
-package global.jwt.filter;
+package filter;
 
-import global.jwt.service.JwtService;
-import login.oauthtest4.domain.user.User;
-import login.oauthtest4.domain.user.repository.UserRepository;
-import login.oauthtest4.global.jwt.util.PasswordUtil;
+import domain.User;
+import repository.UserRepository;
+import service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,10 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import util.PasswordUtil;
+
 import java.io.IOException;
 
 /**

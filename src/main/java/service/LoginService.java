@@ -1,12 +1,12 @@
-package global.login.service;
+package service;
 
-import login.oauthtest4.domain.user.User;
-import login.oauthtest4.domain.user.repository.UserRepository;
+import domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor

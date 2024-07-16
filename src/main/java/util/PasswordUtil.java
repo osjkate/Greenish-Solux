@@ -1,4 +1,4 @@
-package global.jwt.util;
+package util;
 
 import java.util.Random;
 

@@ -1,12 +1,5 @@
-package global.oauth2;
+package domain;
 
-import login.oauthtest4.domain.user.Role;
-import login.oauthtest4.domain.user.SocialType;
-import login.oauthtest4.domain.user.User;
-import login.oauthtest4.global.oauth2.userinfo.GoogleOAuth2UserInfo;
-import login.oauthtest4.global.oauth2.userinfo.KakaoOAuth2UserInfo;
-import login.oauthtest4.global.oauth2.userinfo.NaverOAuth2UserInfo;
-import login.oauthtest4.global.oauth2.userinfo.OAuth2UserInfo;
 import lombok.Builder;
 import lombok.Getter;
 

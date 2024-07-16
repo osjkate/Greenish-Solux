@@ -1,20 +1,18 @@
-package global.oauth2.handler;
+package handler;
 
-import global.oauth2.CustomOAuth2User;
-import login.oauthtest4.domain.user.Role;
-import login.oauthtest4.domain.user.User;
-import login.oauthtest4.domain.user.repository.UserRepository;
-import login.oauthtest4.global.jwt.service.JwtService;
+import domain.CustomOAuth2User;
+import domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import service.JwtService;
+
 import java.io.IOException;
 
 @Slf4j

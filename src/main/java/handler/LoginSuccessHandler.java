@@ -1,7 +1,5 @@
-package global.login.handler;
+package handler;
 
-import login.oauthtest4.domain.user.repository.UserRepository;
-import login.oauthtest4.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import repository.UserRepository;
+import service.JwtService;
 
 @Slf4j
 @RequiredArgsConstructor

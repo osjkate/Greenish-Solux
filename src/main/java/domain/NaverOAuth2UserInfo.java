@@ -1,6 +1,4 @@
-package global.oauth2.userinfo;
-
-import org.springframework.security.core.parameters.P;
+package domain;
 
 import java.util.Map;
 

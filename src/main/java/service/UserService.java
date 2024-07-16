@@ -1,14 +1,14 @@
-package user.service;
+package service;
 
-import main.java.login.oauthtest4.domain.user.Role;
-import user.User;
-import login.oauthtest4.domain.user.dto.UserSignUpDto;
-import main.java.login.oauthtest4.domain.user.repository.UserRepository;
+import domain.Role;
+import domain.User;
+import dto.UserSignUpDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
+import repository.UserRepository;
 
 @Service
 @Transactional

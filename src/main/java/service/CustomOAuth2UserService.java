@@ -1,10 +1,9 @@
-package global.oauth2.service;
+package service;
 
-import global.oauth2.CustomOAuth2User;
-import global.oauth2.OAuthAttributes;
-import login.oauthtest4.domain.user.SocialType;
-import login.oauthtest4.domain.user.User;
-import login.oauthtest4.domain.user.repository.UserRepository;
+import domain.CustomOAuth2User;
+import domain.OAuthAttributes;
+import domain.SocialType;
+import domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import repository.UserRepository;
 
 import java.util.Collections;
 import java.util.Map;

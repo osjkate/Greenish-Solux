@@ -1,4 +1,4 @@
-package global.oauth2.userinfo;
+package domain;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
-package user.repository;
+package repository;
 
-import main.java.login.oauthtest4.domain.user.SocialType;
-import login.oauthtest4.domain.user.User;
+import domain.SocialType;
+import domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
