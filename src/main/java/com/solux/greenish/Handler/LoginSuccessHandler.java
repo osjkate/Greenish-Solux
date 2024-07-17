@@ -1,5 +1,6 @@
-package handler;
+package com.solux.greenish.Handler;
 
+import com.solux.greenish.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +10,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import repository.UserRepository;
-import service.JwtService;
+import com.solux.greenish.Service.JwtService;
 
 @Slf4j
 @RequiredArgsConstructor

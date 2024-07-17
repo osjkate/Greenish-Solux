@@ -1,14 +1,14 @@
-package config;
+package com.solux.greenish.Config;
 
-import filter.JwtAuthenticationProcessingFilter;
-import handler.LoginFailureHandler;
-import handler.LoginSuccessHandler;
-import handler.OAuth2LoginFailureHandler;
-import handler.OAuth2LoginSuccessHandler;
+import com.solux.greenish.Filter.JwtAuthenticationProcessingFilter;
+import com.solux.greenish.Handler.LoginFailureHandler;
+import com.solux.greenish.Handler.LoginSuccessHandler;
+import com.solux.greenish.Handler.OAuth2LoginFailureHandler;
+import com.solux.greenish.Handler.OAuth2LoginSuccessHandler;
+import com.solux.greenish.Repository.UserRepository;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import repository.UserRepository;
-import service.CustomOAuth2UserService;
+import com.solux.greenish.Service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import service.JwtService;
-import service.LoginService;
+import com.solux.greenish.Service.JwtService;
+import com.solux.greenish.Service.LoginService;
 
 /**
  * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
+                                .requestMatchers("/", "/index.html", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->

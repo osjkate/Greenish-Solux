@@ -1,4 +1,4 @@
-package dto;
+package com.solux.greenish.Dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

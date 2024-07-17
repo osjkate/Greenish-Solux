@@ -1,4 +1,4 @@
-package domain;
+package com.solux.greenish.Domain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

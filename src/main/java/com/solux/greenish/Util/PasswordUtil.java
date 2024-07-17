@@ -1,4 +1,4 @@
-package util;
+package com.solux.greenish.Util;
 
 import java.util.Random;
 

@@ -1,8 +1,8 @@
-package filter;
+package com.solux.greenish.Filter;
 
-import domain.User;
-import repository.UserRepository;
-import service.JwtService;
+import com.solux.greenish.Domain.User;
+import com.solux.greenish.Repository.UserRepository;
+import com.solux.greenish.Service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +17,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import util.PasswordUtil;
+import com.solux.greenish.Util.PasswordUtil;
 
 import java.io.IOException;
 

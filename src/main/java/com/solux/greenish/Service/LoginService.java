@@ -1,12 +1,12 @@
-package service;
+package com.solux.greenish.Service;
 
-import domain.User;
+import com.solux.greenish.Domain.User;
+import com.solux.greenish.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor

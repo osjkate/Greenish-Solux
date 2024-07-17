@@ -1,4 +1,4 @@
-package handler;
+package com.solux.greenish.Handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
