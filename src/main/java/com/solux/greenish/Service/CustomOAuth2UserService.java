@@ -1,8 +1,8 @@
 package service;
 
-import domain.CustomOAuth2User;
-import domain.OAuthAttributes;
-import domain.SocialType;
+import com.solux.greenish.Domain.CustomOAuth2User;
+import com.solux.greenish.Domain.OAuthAttributes;
+import com.solux.greenish.Domain.SocialType;
 import domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

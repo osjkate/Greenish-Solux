@@ -1,7 +1,7 @@
 package handler;
 
-import domain.CustomOAuth2User;
-import domain.Role;
+import com.solux.greenish.Domain.CustomOAuth2User;
+import com.solux.greenish.Domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

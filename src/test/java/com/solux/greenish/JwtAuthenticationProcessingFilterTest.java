@@ -1,8 +1,11 @@
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import domain.Role;
-import domain.User;
+import com.solux.greenish.Domain.Role;
+
+import com.solux.greenish.Domain.User;
+import com.solux.greenish.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import repository.UserRepository;
-import service.JwtService;
+import com.solux.greenish.Service.JwtService;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -49,7 +51,8 @@ class JwtAuthenticationProcessingFilterTest {
     @Autowired
     JwtService jwtService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    ObjectMapper objectMapper;
 
     PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
