@@ -1,7 +1,10 @@
 package com.solux.greenish.User.Domain;
 
+import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +13,8 @@ import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id @Column(name = "user_id")
@@ -19,6 +24,15 @@ public class User {
     private String nickname;
 
     private String location;
+    private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<Plant> plants = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
+    private String password;
 
     @OneToOne
     @JoinColumn(name = "environment_id")
