@@ -25,9 +25,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// JSON Processing
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
-
 	// JWT
 	implementation 'com.auth0:java-jwt:4.2.1'
 
@@ -44,7 +41,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// ModelMapper
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.modelmapper:modelmapper:3.0.0'
 
 	// Validation
