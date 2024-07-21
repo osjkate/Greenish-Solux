@@ -27,8 +27,34 @@ public class PlantDetail {
         @Data
         public static class Plantdtl{
             private String adviseInfo;
-            private String distbNm;
-            private String dlthtsCodeNm;
+            private String distbNm; //유통명
+            private String dlthtsCodeNm; //병충해코드명
+            private String clCodeNm; //분류코드명
+            private String fmlCodeNm;
+            private String fmldecolrCodeNm;
+            private String fmldeSeasonCodeNm;
+            private String fncltyInfo;
+            private String frtlzrInfo;
+            private String growthAraInfo;
+            private String growthHgInfo;
+            private String grwhstleCodeNm;
+            private String grwhTpCodeNm;
+            private String grwtveCodeNm;
+            private String hdCodeNm;
+            private String ignSeasonCodeNm;
+            private String lefcolrCodeNm;
+            private String lefmrkCodeNm;
+            private String lefStleInfo;
+            private String lighttdemanddoCodeNm;
+            private String managedemanddoCodeNm;
+            private String managelevelCodeNm;
+            private String orgplceInfo;
+            private String plntbneNm;
+            private String plntzrNm;
+            private String postngplaceCodeNm;
+            private String rtnFileUrl;
+
+
         }
 
     }

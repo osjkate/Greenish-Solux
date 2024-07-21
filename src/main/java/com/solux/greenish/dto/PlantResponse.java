@@ -3,6 +3,7 @@ import lombok.Data;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
+
 //XML을 JAXB를 사용하여 맵핑하기
 @XmlAccessorType(XmlAccessType.FIELD)//XML데이터의 맵핑 방식
 @Data
@@ -36,7 +37,12 @@ public class PlantResponse {
                 private String cntntsSj;
                 private String rtnFileUrl;
 
-
+                //사진 여러장일 경우 한장만 갖기
+                public void oneRtnFile(){
+                    if (this.rtnFileUrl != null && !this.rtnFileUrl.isEmpty()) {
+                        this.rtnFileUrl = rtnFileUrl.split("\\|")[0];
+                    }
+                }
 
 
 }}}
