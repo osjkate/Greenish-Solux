@@ -29,20 +29,28 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok:1.18.34'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 	// Jackson Databind 의존성
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+ 
 	// Jackson Dataformat XML 의존성
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
 	implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
 	implementation 'javax.activation:activation:1.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {
