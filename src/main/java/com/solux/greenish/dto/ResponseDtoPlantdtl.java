@@ -1,21 +1,15 @@
-package com.solux.greenish.entity;
+package com.solux.greenish.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 
-//데이터베이스와 맵핑되는 객체
+
 @Data
-@Entity
-public class Plant {
-    @Id
+public class ResponseDtoPlantdtl {
     private String cntntsNo;
-    private String rtnFileUrl;
-    private String fruit;
+    private String adviseInfo;
+    private String clCodeNm;
     private String distbNm;
     private String dlthtsCodeNm;
-    private String clCodeNm;
     private String fmlCodeNm;
     private String fmldecolrCodeNm;
     private String fmldeSeasonCodeNm;
@@ -35,8 +29,9 @@ public class Plant {
     private String managedemanddoCodeNm;
     private String managelevelCodeNm;
     private String orgplceInfo;
-    private String flclrCodeNm;
     private String plntbneNm;
     private String plntzrNm;
-    private String postngplaceCodeNm;
+    private String rtnFileUrl;//사진
+    //제공정보끝
+
 }

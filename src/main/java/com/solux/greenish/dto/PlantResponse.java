@@ -15,6 +15,9 @@ public class PlantResponse {
     private Header header;
     @XmlElement(name = "body")
     private Body body;
+
+
+
     @Data
     @XmlAccessorType(XmlAccessType.FIELD)
 

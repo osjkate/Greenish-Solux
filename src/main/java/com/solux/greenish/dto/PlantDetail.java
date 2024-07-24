@@ -26,10 +26,11 @@ public class PlantDetail {
         private Plantdtl plantdtl;
         @Data
         public static class Plantdtl{
+            private String cntntsNo;
             private String adviseInfo;
-            private String distbNm; //유통명
-            private String dlthtsCodeNm; //병충해코드명
-            private String clCodeNm; //분류코드명
+            private String clCodeNm;
+            private String distbNm;
+            private String dlthtsCodeNm;
             private String fmlCodeNm;
             private String fmldecolrCodeNm;
             private String fmldeSeasonCodeNm;
@@ -51,8 +52,14 @@ public class PlantDetail {
             private String orgplceInfo;
             private String plntbneNm;
             private String plntzrNm;
-            private String postngplaceCodeNm;
-            private String rtnFileUrl;
+            private String rtnFileUrl;//사진
+            //제공정보끝
+
+            //필터링 위한 정보
+            private String fruit;
+            private String  managedemanddoCode; //키우기단계
+            private String  flclrCodeNm; //꽃컬러
+            private String winterLwetTpCodeNm; //최저온도
 
 
         }
