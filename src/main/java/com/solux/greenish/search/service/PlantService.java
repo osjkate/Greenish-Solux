@@ -1,8 +1,9 @@
 package com.solux.greenish.search.service;
-
-import com.solux.greenish.dto.*;
-import com.solux.greenish.dto.ResponseDtoPlantdtl;
-import com.solux.greenish.entity.ApiPlant;
+import com.solux.greenish.search.dto.PlantDetail;
+import com.solux.greenish.search.dto.PlantResponse;
+import com.solux.greenish.search.dto.ResponseDtoPlantInfo;
+import com.solux.greenish.search.dto.ResponseDtoPlantdtl;
+import com.solux.greenish.search.entity.ApiPlant;
 
 import com.solux.greenish.search.repository.ApiPlantRepository;
 import com.solux.greenish.search.specification.ApiPlantSpecification;
@@ -90,7 +91,7 @@ public class PlantService {
 
     //식물의 세부 정보 객체로 불러오는 메소드
     //Api를 DB에 저장하기 위해 사용
-    private PlantDetail toPlantDetail(String url,PlantResponse.Body.Plant plantData) throws JAXBException{
+    private PlantDetail toPlantDetail(String url, PlantResponse.Body.Plant plantData) throws JAXBException{
         String apiResponse = restTemplate.getForObject(url, String.class);
         JAXBContext jaxbContext = JAXBContext.newInstance(PlantDetail.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

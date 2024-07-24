@@ -1,7 +1,6 @@
-package com.solux.greenish.dto;
+package com.solux.greenish.search.dto;
 import lombok.Data;
 
-import javax.swing.text.html.parser.Entity;
 
 @Data
 public class ResponseDtoPlantInfo {

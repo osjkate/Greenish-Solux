@@ -1,6 +1,6 @@
 package com.solux.greenish.search.specification;
 
-import com.solux.greenish.entity.ApiPlant;
+import com.solux.greenish.search.entity.ApiPlant;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ApiPlantSpecification {

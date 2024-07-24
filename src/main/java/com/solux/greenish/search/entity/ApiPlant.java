@@ -1,4 +1,4 @@
-package com.solux.greenish.entity;
+package com.solux.greenish.search.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
