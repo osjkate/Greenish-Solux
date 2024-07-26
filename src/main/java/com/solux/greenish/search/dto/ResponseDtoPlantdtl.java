@@ -1,4 +1,4 @@
-package com.solux.greenish.dto;
+package com.solux.greenish.search.dto;
 
 import lombok.Data;
 

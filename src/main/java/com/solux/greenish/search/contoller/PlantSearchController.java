@@ -1,7 +1,7 @@
 package com.solux.greenish.search.contoller;
-import com.solux.greenish.dto.PlantResponse;
-import com.solux.greenish.dto.ResponseDtoPlantInfo;
-import com.solux.greenish.dto.ResponseDtoPlantdtl;
+import com.solux.greenish.search.dto.PlantResponse;
+import com.solux.greenish.search.dto.ResponseDtoPlantInfo;
+import com.solux.greenish.search.dto.ResponseDtoPlantdtl;
 
 import com.solux.greenish.search.service.PlantService;
 
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.JAXBException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

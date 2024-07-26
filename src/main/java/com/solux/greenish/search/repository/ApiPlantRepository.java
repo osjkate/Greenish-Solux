@@ -1,6 +1,6 @@
 package com.solux.greenish.search.repository;
 
-import com.solux.greenish.entity.ApiPlant;
+import com.solux.greenish.search.entity.ApiPlant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
