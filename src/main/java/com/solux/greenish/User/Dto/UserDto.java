@@ -26,17 +26,18 @@ public class UserDto {
     @AllArgsConstructor
     @Builder
     public static class UserRegistDto {
-        @NotBlank
+        @NotBlank(message = "닉네임을 입력해주세요.")
         private String nickname;
 
         @Builder.Default
         private RoleType role = RoleType.USER;
 
-        @NotBlank
+        @NotBlank(message = "비밀번호를 입력해주세요.")
         private String password;
 
 
-        @Email(message = "잘못된 이메일 형식입니다. ")
+        @NotBlank(message = "이메일을 입력해주세요.")
+        @Email(message = "잘못된 이메일 형식입니다.")
         private String email;
 
 

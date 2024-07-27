@@ -3,6 +3,8 @@ package com.solux.greenish.User.Domain;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "user")
 @Entity @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,3 +47,4 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
 }
+

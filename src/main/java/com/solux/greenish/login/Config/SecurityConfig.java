@@ -3,6 +3,8 @@ package com.solux.greenish.login.Config;
 import com.solux.greenish.login.Jwt.JwtUtil;
 import com.solux.greenish.login.Jwt.JwtFilter;
 import com.solux.greenish.login.Jwt.LoginFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +28,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil, CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil, @Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.corsConfigurationSource = corsConfigurationSource;
@@ -53,7 +55,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**").permitAll()
+
+                        .requestMatchers("/login", "/", "signUp").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated());
@@ -70,7 +73,14 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        http
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .deleteCookies("JSESSIONID", "Authorization")
+                        .invalidateHttpSession(true)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }));
         return http.build();
     }
 }
