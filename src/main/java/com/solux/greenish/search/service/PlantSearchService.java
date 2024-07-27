@@ -108,17 +108,17 @@ public class PlantSearchService {
     //완료
     public Map<String, List<PlantResponse.Body.Plant>> getInitialPlants(){
         //추운 실내 추천(0도) : 가울테리아, 금식나무, 무늬석창포, 자금우
-        List<String> coldPlantsName = new ArrayList<>(Arrays.asList("가울테리아", "금식나무", "무늬석창포", "자금우"));
+        List<String> coldPlantsNo= new ArrayList<>(Arrays.asList("12938", "12998", "18576", "17741"));
         //따뜻한 실내 추천(15도 이상) : 히포에스테스, 해마리아, 털달개비, 듀란타
-        List<String> warmPlantsName = new ArrayList<>(Arrays.asList("히포에스테스", "해마리아", "털달개비", "듀란타"));
+        List<String> warmPlantsNo = new ArrayList<>(Arrays.asList("12901", "12987", "12996", "14675"));
         //따뜻한 식물리스트
 
         List<PlantResponse.Body.Plant> coldPlants=new ArrayList<>();
-      coldPlantsName.stream()
-                .map(name -> {
+      coldPlantsNo.stream()
+                .map(cntntsNo -> {
                     try {
                         PlantResponse.Body.Plant plant=new PlantResponse.Body.Plant();
-                        ApiPlant apiPlant = apiPlantRepository.findByDistbNm(name);
+                        ApiPlant apiPlant = apiPlantRepository.findBycntntsNo(cntntsNo);
                         plant.setCntntsNo(apiPlant.getCntntsNo());
                         plant.setCntntsSj(apiPlant.getDistbNm());
                         plant.setRtnFileUrl(apiPlant.getRtnFileUrl());
@@ -132,11 +132,11 @@ public class PlantSearchService {
               .forEach(coldPlants::add);
         //따뜻한 식물리스트
         List<PlantResponse.Body.Plant> warmPlants=new ArrayList<>();
-        warmPlantsName.stream()
-                .map(name -> {
+        warmPlantsNo.stream()
+                .map(cntntsNo -> {
                     try {
                         PlantResponse.Body.Plant plant=new PlantResponse.Body.Plant();
-                        ApiPlant apiPlant = apiPlantRepository.findByDistbNm(name);
+                        ApiPlant apiPlant = apiPlantRepository.findBycntntsNo(cntntsNo);
                         plant.setCntntsNo(apiPlant.getCntntsNo());
                         plant.setCntntsSj(apiPlant.getDistbNm());
                         plant.setRtnFileUrl(apiPlant.getRtnFileUrl());
