@@ -7,6 +7,7 @@ public class ResponseDtoPlantInfo {
     private  String cntntsNo;
     private  String cntntsSj;
     private  String rtnFileUrl;
-
+    private  String fmlCodeNm;
+    private  String clCodeNm;
 
 }

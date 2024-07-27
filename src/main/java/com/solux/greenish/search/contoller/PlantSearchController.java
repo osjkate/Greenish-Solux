@@ -3,7 +3,7 @@ import com.solux.greenish.search.dto.PlantResponse;
 import com.solux.greenish.search.dto.ResponseDtoPlantInfo;
 import com.solux.greenish.search.dto.ResponseDtoPlantdtl;
 
-import com.solux.greenish.search.service.PlantService;
+import com.solux.greenish.search.service.PlantSearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +21,10 @@ import java.util.Map;
 public class PlantSearchController {
 
 
-    private final PlantService plantService;
+    private final PlantSearchService plantService;
 
     @Autowired
-    public PlantSearchController(PlantService plantService) {
+    public PlantSearchController(PlantSearchService plantService) {
         this.plantService = plantService;
 
 
@@ -38,12 +38,11 @@ public class PlantSearchController {
         try {
             // 이름이 null아니고, 문자열이 공백이 아니고, 글자 크기 한개이상
             if (StringUtils.hasText(name)) {
-                PlantResponse plantResponse = plantService.SearchPlantByName(name);
+                List<ResponseDtoPlantInfo> plantInfos = plantService.SearchPlantByName(name);
                 Map<String, Object> requestResponse = new HashMap<>();
                 // 검색시 결과가 있는 경우
-                if (plantResponse != null) {
-                    List<PlantResponse.Body.Plant> plantList = plantResponse.getBody().getPlantList();
-                    requestResponse.put("plants", plantList);
+                if (plantInfos != null) {
+                    requestResponse.put("plants", plantInfos);
                     return new ResponseEntity<>(requestResponse, HttpStatus.OK);
                 } else {
                     // 검색시 결과가 없는 경우

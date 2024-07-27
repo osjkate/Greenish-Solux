@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ApiPlantRepository extends JpaRepository<ApiPlant, String>, JpaSpecificationExecutor<ApiPlant> {
-    List<ApiPlant> findByDistbNmIn(List<String> distbNms);
+    List<ApiPlant> findByDistbNmContaining(String distbNm);
     ApiPlant findBycntntsNo(String cntnsNo);
-
+    ApiPlant findByDistbNm(String distbNm);
 }
