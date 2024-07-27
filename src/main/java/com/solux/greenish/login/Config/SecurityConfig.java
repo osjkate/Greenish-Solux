@@ -3,6 +3,7 @@ package com.solux.greenish.login.Config;
 import com.solux.greenish.login.Jwt.JwtUtil;
 import com.solux.greenish.login.Jwt.JwtFilter;
 import com.solux.greenish.login.Jwt.LoginFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +27,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil, CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil,
+                          @Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.corsConfigurationSource = corsConfigurationSource;

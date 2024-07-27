@@ -6,12 +6,12 @@ import lombok.Builder;
 @Builder
 public class PlantSimpleResponseDto {
     private Long plantId;
-    private String photoPath;
+    private String fileName;
 
     public static PlantSimpleResponseDto of(Plant plant) {
         return PlantSimpleResponseDto.builder()
                 .plantId(plant.getId())
-                .photoPath(plant.getPhotoPath())
+                .fileName(plant.getPhoto().getFileName())
                 .build();
     }
 }

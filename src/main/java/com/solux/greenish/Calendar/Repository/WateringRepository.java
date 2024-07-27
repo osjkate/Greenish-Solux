@@ -21,6 +21,6 @@ public interface WateringRepository extends JpaRepository<Watering, Long> {
 
     boolean existsByPlantIdAndStatus(Long plantId, Status status);
 
-    List<Watering> findByDateAndUserId(LocalDate date, Long userId);
+    List<Watering> findByScheduleDateAndUserId(LocalDate scheduleDate, Long userId);
 
 }

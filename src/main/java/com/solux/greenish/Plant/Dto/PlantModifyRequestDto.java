@@ -9,5 +9,5 @@ public class PlantModifyRequestDto {
     private String name;
     private String age;
     private boolean alarm;
-    private String photoPath;
+    private String fileName;
 }
