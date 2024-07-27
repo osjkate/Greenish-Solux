@@ -70,9 +70,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
 
-        System.out.println("여기까지 되나? 헤더 왜 안들어가 시발");
+        System.out.println("여기까지 되나? 헤더 왜 안들어가");
         System.out.println(token);
         response.addHeader("Authorization", "Bearer " + token);
+
     }
 
     @Override
