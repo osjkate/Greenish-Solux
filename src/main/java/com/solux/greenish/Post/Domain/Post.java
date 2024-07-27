@@ -1,5 +1,6 @@
 package com.solux.greenish.Post.Domain;
 
+import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.User.Domain.User;
 import jakarta.persistence.*;
@@ -35,18 +36,9 @@ public class Post {
 
     private String photo_path;
 
-    // post 생성 함수
-    public static Post createPost(User user, Plant plant, String title,
-                                  String content, LocalDate createdAt, String photo_path){
-        return Post.builder()
-                .user(user)
-                .plant(plant)
-                .title(title)
-                .content(content)
-                .createdAt(createdAt)
-                .photo_path(photo_path)
-                .build();
-    }
+    @OneToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
 
     // post 수정 함수
     public void update( Plant plant, String title,

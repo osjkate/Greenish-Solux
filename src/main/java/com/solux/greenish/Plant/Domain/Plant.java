@@ -1,6 +1,7 @@
 package com.solux.greenish.Plant.Domain;
 
 import com.solux.greenish.Calendar.Domain.Watering;
+import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Post.Domain.Post;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.search.entity.ApiPlant;
@@ -36,7 +37,10 @@ public class Plant {
 
     private String age;
 
-    private String photoPath;
+    @OneToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
+
 
     @ManyToOne
     @JoinColumn(name = "api_plant_id")
@@ -47,13 +51,15 @@ public class Plant {
     private boolean isAlarm;
 
     public void update(String name, String age, boolean isAlarm,
-                       int wateringCycle, ApiPlant apiPlant, String photoPath
-    ) {
+                       int wateringCycle, ApiPlant apiPlant) {
         this.name = name;
         this.age = age;
         this.wateringCycle = wateringCycle;
         this.isAlarm = isAlarm;
         this.apiPlant = apiPlant;
-        this.photoPath = photoPath;
+    }
+
+    public void updatePhoto(Photo photo) {
+        this.photo = photo;
     }
 }

@@ -4,6 +4,11 @@ import com.solux.greenish.Calendar.Domain.Status;
 import com.solux.greenish.Calendar.Domain.Watering;
 import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
+import com.solux.greenish.Photo.Domain.Photo;
+import com.solux.greenish.Photo.Dto.PhotoResponseDto;
+import com.solux.greenish.Photo.Dto.PresignedUrlDto;
+import com.solux.greenish.Photo.Repository.PhotoRepository;
+import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Plant.Dto.*;
 import com.solux.greenish.Plant.Repository.PlantRepository;
@@ -20,13 +25,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+
+// TODO : 조회에 사진 추가
+
 @RequiredArgsConstructor
 public class PlantService {
     private final PlantRepository plantRepository;
     private final WateringRepository wateringRepository;
     private final UserRepository userRepository;
     private final ApiPlantRepository apiPlantRepository;
+    private final PhotoRepository photoRepository;
+
+    private final PhotoService photoService;
 
     private Plant getPlant(Long plantId) {
         return plantRepository.findById(plantId)
@@ -40,6 +50,11 @@ public class PlantService {
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 조회할 수 없습니다."));
+    }
+
+    private Photo getPhoto(Long photoId) {
+        return photoRepository.findById(photoId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사진을 조회할 수 없습니다. "));
     }
 
     // id로 식물 조회
@@ -89,12 +104,12 @@ public class PlantService {
     // 식물 생성
     // 물주기도 같이 생성됨
     @Transactional
-    public IdResponse createPlant(PlantRegistrationRequestDto request) {
+    public PlantResponseDto createPlant(PlantCreateRequestDto request) {
         User user = getUser(request.getUserId());
         ApiPlant apiPlant = getApiPlant(request.getDistbNm());
 
         if (plantRepository.existsByName(request.getName())) {
-            throw new RuntimeException("해당 식물 이름이 중복됩니다. ");
+            throw new IllegalArgumentException("해당 식물 이름이 중복됩니다. ");
         }
 
         int wateringCycle = getWateringCycle(user, apiPlant);
@@ -103,19 +118,38 @@ public class PlantService {
 
         plantRepository.save(plant);
 
+        PhotoResponseDto photoResponseDto = generatePreSignedUrl(plant.getId(), request.getFilename());
+        String url = photoResponseDto.getUrl();
 
+        createAndSaveWateringSchedules(plant, wateringCycle);
+
+        plant.updatePhoto(getPhoto(photoResponseDto.getPhotoId()));
+
+        return PlantResponseDto.builder()
+                .plantId(plant.getId())
+                .photo(photoResponseDto)
+                .build();
+    }
+
+    private PhotoResponseDto generatePreSignedUrl(Long plantId, String filename) {
+        return photoService.getPreSignedUrl(PresignedUrlDto.builder()
+                .prefix(plantId)
+                .fileName(filename)
+                .build());
+    }
+
+    private void createAndSaveWateringSchedules(Plant plant, int wateringCycle) {
         List<Watering> waterings = new ArrayList<>();
         Watering watering = Watering.builder()
-                .plant(getPlant(plant.getId()))
+                .plant(plant)
                 .status(Status.PRE)
                 .scheduleDate(LocalDate.now().plusDays(wateringCycle))
                 .build();
 
         waterings.add(watering);
         waterings.forEach(wateringRepository::save);
-
-        return IdResponse.of(plant);
     }
+
 
     // TODO : 물주기 도출로직
     public int getWateringCycle(User user, ApiPlant apiPlant) {
@@ -125,21 +159,34 @@ public class PlantService {
     // 식물 update
     // 물주기도 update 됨
     @Transactional
-    public IdResponse updatePlant(PlantModifyRequestDto request) {
+    public PlantResponseDto updatePlant(PlantModifyRequestDto request) {
 
         Plant plant = getPlant(request.getPlantId());
         ApiPlant apiPlant = getApiPlant(request.getDistbNm());
 
         int waterCycle = getWateringCycle(getUser(plant.getUser().getId()), apiPlant);
 
+        String photoPath = plant.getPhoto().getPhotoPath();
+        PhotoResponseDto photoResponseDto = null;
+        if (!request.getFileName().equals(plant.getPhoto().getFileName())) {
+            photoService.deletePhoto(plant.getPhoto().getId());
+            photoResponseDto = generatePreSignedUrl(plant.getId(), request.getFileName());
+            plant.updatePhoto(getPhoto(photoResponseDto.getPhotoId()));
+        }
+
         plant.update(request.getName(), request.getAge(), request.isAlarm(),
-                waterCycle, apiPlant, request.getPhotoPath());
+                waterCycle, apiPlant);
+
 
         Watering watering = wateringRepository.findFirstByPlantIdAndStatus(plant.getId(), Status.PRE)
                 .orElseThrow(() -> new IllegalArgumentException("물주기 주기가 존재하지 않습니다. "));
         watering.updateWateringDate(plant.getWateringCycle());
 
-        return IdResponse.of(plant);
+        return PlantResponseDto.builder()
+                .plantId(plant.getId())
+                .photo(photoResponseDto)
+                .build();
+
     }
 
     // 식물 하드 삭제 -> 관련 게시물, 물주기 모두 삭제

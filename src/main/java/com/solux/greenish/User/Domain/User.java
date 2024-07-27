@@ -1,5 +1,6 @@
 package com.solux.greenish.User.Domain;
 
+import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import jakarta.persistence.*;
@@ -40,6 +41,10 @@ public class User {
     @OneToOne
     @JoinColumn(name = "environment_id")
     private Environment environment;
+
+    @OneToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
 
     // 알림 기능 추가 예정
 

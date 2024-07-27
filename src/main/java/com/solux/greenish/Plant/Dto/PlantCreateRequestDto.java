@@ -6,12 +6,12 @@ import com.solux.greenish.search.entity.ApiPlant;
 import lombok.Getter;
 
 @Getter
-public class PlantRegistrationRequestDto {
+public class PlantCreateRequestDto {
     private Long userId;
     private String distbNm;
     private String name;
     private String age;
-    private String photoPath;
+    private String filename;
     private boolean isAlarm;
 
     public Plant toEntity(User user, int wateringCycle, ApiPlant apiPlant) {
@@ -19,7 +19,6 @@ public class PlantRegistrationRequestDto {
                 .user(user)
                 .name(name)
                 .age(age)
-                .photoPath(photoPath)
                 .apiPlant(apiPlant)
                 .isAlarm(isAlarm)
                 .wateringCycle(wateringCycle)

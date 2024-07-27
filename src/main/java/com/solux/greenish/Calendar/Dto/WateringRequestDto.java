@@ -8,4 +8,5 @@ import java.time.LocalDate;
 public class WateringRequestDto{
     private Long UserId;
     private LocalDate date;
+
 }

@@ -55,7 +55,8 @@ public class WateringService {
     // Date로 watering 조회
     @Transactional(readOnly = true)
     public List<WateringResponseDto> getAllWateringByDate(WateringRequestDto request) {
-        return wateringRepository.findByDateAndUserId(request.getDate(), request.getUserId())
+
+        return wateringRepository.findByScheduleDateAndUserId(request.getDate(), request.getUserId())
                 .stream().map(WateringResponseDto::of).toList();
     }
 
