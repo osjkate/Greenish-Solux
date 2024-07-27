@@ -1,9 +1,10 @@
 package com.solux.greenish.search.config;
 
+import com.solux.greenish.search.service.PlantSearchService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import com.solux.greenish.search.service.PlantService;
+import com.solux.greenish.search.service.PlantSearchService;
 
 import javax.xml.bind.JAXBException;
 import java.util.logging.Level;
@@ -12,10 +13,10 @@ import java.util.logging.Logger;
 @Component
 public class AppInitializer {
 
-    private final PlantService plantService;
+    private final PlantSearchService plantService;
     private static final Logger logger = Logger.getLogger(AppInitializer.class.getName());
 
-    public AppInitializer(PlantService plantService) {
+    public AppInitializer(PlantSearchService plantService) {
         this.plantService = plantService;
     }
 

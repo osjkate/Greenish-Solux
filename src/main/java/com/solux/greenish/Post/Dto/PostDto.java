@@ -1,10 +1,10 @@
 package com.solux.greenish.Post.Dto;
+import org.modelmapper.ModelMapper;
 
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import com.solux.greenish.User.Domain.User;
 import lombok.*;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 

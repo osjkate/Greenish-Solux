@@ -1,4 +1,5 @@
 package com.solux.greenish.search.service;
+import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.search.dto.PlantDetail;
 import com.solux.greenish.search.dto.PlantResponse;
 import com.solux.greenish.search.dto.ResponseDtoPlantInfo;
@@ -18,8 +19,6 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -27,7 +26,7 @@ import static io.micrometer.common.util.StringUtils.truncate;
 import static org.springframework.util.StringUtils.hasText;
 
 @Service
-public class PlantService {
+public class PlantSearchService {
     @Value("${nongsaro.api.key}")
     private String apiKey;
     @Value("${nongsaro.api.url}")
@@ -37,7 +36,7 @@ public class PlantService {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public PlantService(RestTemplate restTemplate,ApiPlantRepository apiPlantRepository) {
+    public PlantSearchService(RestTemplate restTemplate,ApiPlantRepository apiPlantRepository) {
         this.restTemplate = restTemplate;
         this.apiPlantRepository=apiPlantRepository;
     }
@@ -109,33 +108,46 @@ public class PlantService {
     //완료
     public Map<String, List<PlantResponse.Body.Plant>> getInitialPlants(){
         //추운 실내 추천(0도) : 가울테리아, 금식나무, 무늬석창포, 자금우
-        List<String> coldPlantsName = new ArrayList<>(Arrays.asList("가울테리아", "금식나무", "무늬석창포", "자금우"));
+        List<String> coldPlantsNo= new ArrayList<>(Arrays.asList("12938", "12998", "18576", "17741"));
         //따뜻한 실내 추천(15도 이상) : 히포에스테스, 해마리아, 털달개비, 듀란타
-        List<String> warmPlantsName = new ArrayList<>(Arrays.asList("히포에스테스", "해마리아", "털달개비", "듀란타"));
+        List<String> warmPlantsNo = new ArrayList<>(Arrays.asList("12901", "12987", "12996", "14675"));
         //따뜻한 식물리스트
-        List<PlantResponse.Body.Plant> coldPlants = coldPlantsName.stream()
-                .map(name -> {
+
+        List<PlantResponse.Body.Plant> coldPlants=new ArrayList<>();
+      coldPlantsNo.stream()
+                .map(cntntsNo -> {
                     try {
-                        return SearchPlantByName(name).getBody().getPlantList();
+                        PlantResponse.Body.Plant plant=new PlantResponse.Body.Plant();
+                        ApiPlant apiPlant = apiPlantRepository.findBycntntsNo(cntntsNo);
+                        plant.setCntntsNo(apiPlant.getCntntsNo());
+                        plant.setCntntsSj(apiPlant.getDistbNm());
+                        plant.setRtnFileUrl(apiPlant.getRtnFileUrl());
+                        return plant;
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
                 })
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        //차가운 식물리스트
-        List<PlantResponse.Body.Plant> warmPlants = warmPlantsName.stream()
-                .map(name -> {
+              .filter(Objects::nonNull)
+              .forEach(coldPlants::add);
+        //따뜻한 식물리스트
+        List<PlantResponse.Body.Plant> warmPlants=new ArrayList<>();
+        warmPlantsNo.stream()
+                .map(cntntsNo -> {
                     try {
-                        return SearchPlantByName(name).getBody().getPlantList();
+                        PlantResponse.Body.Plant plant=new PlantResponse.Body.Plant();
+                        ApiPlant apiPlant = apiPlantRepository.findBycntntsNo(cntntsNo);
+                        plant.setCntntsNo(apiPlant.getCntntsNo());
+                        plant.setCntntsSj(apiPlant.getDistbNm());
+                        plant.setRtnFileUrl(apiPlant.getRtnFileUrl());
+                        return plant;
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
                 })
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .forEach(warmPlants::add);
 
         //반환
         Map<String, List<PlantResponse.Body.Plant>> initialPlants = new HashMap<>();
@@ -144,22 +156,30 @@ public class PlantService {
         return initialPlants;
 
 
-        /*걍 db에서 꺼내는 게 나은가...?생각해보기*/
+
     }
 
 
     //이름으로 검색하는 경우에 사용하는 메소드
     //완료
-    public PlantResponse SearchPlantByName(String name) throws Exception {
-        String url = baseUrl + "/gardenList?apiKey=" + apiKey + "&sType=sCntntsSj" + "&sText=" + name;
+    public List<ResponseDtoPlantInfo> SearchPlantByName(String name) throws Exception {
+        /*        String url = baseUrl + "/gardenList?apiKey=" + apiKey + "&sType=sCntntsSj" + "&sText=" + name;
         PlantResponse response = XmlToPlant(url);
         List<PlantResponse.Body.Plant> plantList = response.getBody().getPlantList();
-
         if (plantList != null && !plantList.isEmpty()) {
             return response;
         } else {
             return null;
-        }
+        }*/
+
+        List<ApiPlant> plants = apiPlantRepository.findByDistbNmContaining(name);
+        List<ResponseDtoPlantInfo> plantInfos=plants.stream().map(this::convertToPlantInfo)
+                .collect(Collectors.toList());
+        if (plantInfos!=null && !plantInfos.isEmpty())
+        return plantInfos;
+        else
+            return null;
+
     }
 
     //entity를 Dto으로 변환
@@ -204,6 +224,8 @@ public class PlantService {
         plant.setCntntsSj(apiplant.getDistbNm());
         plant.setCntntsNo(apiplant.getCntntsNo());
         plant.setRtnFileUrl(apiplant.getRtnFileUrl());
+        plant.setFmlCodeNm(apiplant.getFmlCodeNm());
+        plant.setClCodeNm(apiplant.getClCodeNm());
         return plant;
     }
 
