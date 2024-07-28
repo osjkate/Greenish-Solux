@@ -34,19 +34,19 @@ public class Post {
 
     private LocalDate createdAt;
 
-    private String photo_path;
-
     @OneToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
 
     // post 수정 함수
-    public void update( Plant plant, String title,
-                       String content, String photo_path) {
+    public void update(Plant plant, String title,
+                       String content) {
         this.plant = plant;
         this.title = title;
         this.content = content;
-        this.photo_path = photo_path;
+    }
+    public void updatePhoto(Photo photo) {
+        this.photo = photo;
     }
 
 }

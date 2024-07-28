@@ -49,6 +49,15 @@ public class PhotoService {
                 .build();
     }
 
+    public PhotoResponseDto generatePreSignedDto(Long prefix, String fileName) {
+        return getPreSignedUrl(PresignedUrlDto.builder()
+                .prefix(prefix)
+                .fileName(fileName)
+                .build());
+
+    }
+
+    // 포토 삭제
     @Transactional
     public void deletePhoto(Long photoId) {
         Photo photo = photoRepository.findById(photoId)

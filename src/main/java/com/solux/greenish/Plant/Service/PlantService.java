@@ -12,7 +12,7 @@ import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Plant.Dto.*;
 import com.solux.greenish.Plant.Repository.PlantRepository;
-import com.solux.greenish.Post.Dto.PostDto.PostSimpleDto;
+import com.solux.greenish.Post.Dto.PostSimpleResponseDto;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.search.entity.ApiPlant;
@@ -29,6 +29,7 @@ import java.util.List;
 // TODO : 조회에 사진 추가
 
 @RequiredArgsConstructor
+@Service
 public class PlantService {
     private final PlantRepository plantRepository;
     private final WateringRepository wateringRepository;
@@ -64,10 +65,14 @@ public class PlantService {
         Plant plant = getPlant(id);
 
         // post들 조회
-        List<PostSimpleDto> posts = plant.getPosts()
-                .stream().map(PostSimpleDto::of).toList();
+        List<PostSimpleResponseDto> posts = plant.getPosts()
+                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
 
-        return PlantDetailResponseDto.of(plant, posts);
+        // TODO : postService 수정예정
+        List<PhotoResponseDto> postPhotos = posts.stream().map((post) -> photoService.getFilePath(post.getId())).toList();
+        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto().getId());
+
+        return PlantDetailResponseDto.of(plant, posts, plantPhoto);
     }
 
     // 식물의 물주기 조회
@@ -118,25 +123,17 @@ public class PlantService {
 
         plantRepository.save(plant);
 
-        PhotoResponseDto photoResponseDto = generatePreSignedUrl(plant.getId(), request.getFilename());
-        String url = photoResponseDto.getUrl();
+        PhotoResponseDto photo = null;
+        if (request.getFilename() != null) {
+            photo = photoService.generatePreSignedDto(plant.getId(), request.getFilename());
+            plant.updatePhoto(getPhoto(photo.getPhotoId()));
 
+        }
         createAndSaveWateringSchedules(plant, wateringCycle);
 
-        plant.updatePhoto(getPhoto(photoResponseDto.getPhotoId()));
-
-        return PlantResponseDto.builder()
-                .plantId(plant.getId())
-                .photo(photoResponseDto)
-                .build();
+        return PlantResponseDto.toDto(plant, photo);
     }
 
-    private PhotoResponseDto generatePreSignedUrl(Long plantId, String filename) {
-        return photoService.getPreSignedUrl(PresignedUrlDto.builder()
-                .prefix(plantId)
-                .fileName(filename)
-                .build());
-    }
 
     private void createAndSaveWateringSchedules(Plant plant, int wateringCycle) {
         List<Watering> waterings = new ArrayList<>();
@@ -167,11 +164,13 @@ public class PlantService {
         int waterCycle = getWateringCycle(getUser(plant.getUser().getId()), apiPlant);
 
         String photoPath = plant.getPhoto().getPhotoPath();
-        PhotoResponseDto photoResponseDto = null;
-        if (!request.getFileName().equals(plant.getPhoto().getFileName())) {
+        PhotoResponseDto photo = null;
+        String newFileName = request.getFileName();
+        String currentFileName = plant.getPhoto().getFileName();
+        if (newFileName != null && !newFileName.equals(currentFileName)) {
             photoService.deletePhoto(plant.getPhoto().getId());
-            photoResponseDto = generatePreSignedUrl(plant.getId(), request.getFileName());
-            plant.updatePhoto(getPhoto(photoResponseDto.getPhotoId()));
+            photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
+            plant.updatePhoto(getPhoto(photo.getPhotoId()));
         }
 
         plant.update(request.getName(), request.getAge(), request.isAlarm(),
@@ -182,10 +181,7 @@ public class PlantService {
                 .orElseThrow(() -> new IllegalArgumentException("물주기 주기가 존재하지 않습니다. "));
         watering.updateWateringDate(plant.getWateringCycle());
 
-        return PlantResponseDto.builder()
-                .plantId(plant.getId())
-                .photo(photoResponseDto)
-                .build();
+        return PlantResponseDto.toDto(plant, photo);
 
     }
 
