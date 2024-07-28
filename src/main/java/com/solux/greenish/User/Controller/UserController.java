@@ -38,8 +38,8 @@ public class UserController {
     }
 
     // 계정 삭제
-    @DeleteMapping("/delete-account/{userId}")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long userId) {
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<String> deleteAccount(@RequestParam(name = "userId") Long userId) {
         userService.deleteAccount(userId);
         return ResponseEntity.ok("계정 삭제 완료");
     }
