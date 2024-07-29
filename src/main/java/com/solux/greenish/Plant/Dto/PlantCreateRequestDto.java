@@ -11,7 +11,7 @@ public class PlantCreateRequestDto {
     private String distbNm;
     private String name;
     private String age;
-    private String filename;
+    private String fileName;
     private boolean isAlarm;
 
     public Plant toEntity(User user, int wateringCycle, ApiPlant apiPlant) {

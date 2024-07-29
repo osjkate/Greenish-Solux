@@ -6,7 +6,6 @@ import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Photo.Dto.PhotoResponseDto;
-import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
@@ -129,8 +128,8 @@ public class PlantService {
         plantRepository.save(plant);
 
         PhotoResponseDto photo = null;
-        if (request.getFilename() != null) {
-            photo = photoService.generatePreSignedDto(plant.getId(), request.getFilename());
+        if (request.getFileName() != null) {
+            photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
 
         }
@@ -147,6 +146,7 @@ public class PlantService {
         List<Watering> waterings = new ArrayList<>();
         Watering watering = Watering.builder()
                 .plant(plant)
+                .user(getUser(plant.getUser().getId()))
                 .status(Status.PRE)
                 .wateringCycle(wateringCycle)
                 .scheduleDate(LocalDate.now().plusDays(wateringCycle))

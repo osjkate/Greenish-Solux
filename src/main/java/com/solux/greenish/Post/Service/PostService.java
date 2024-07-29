@@ -98,16 +98,18 @@ public class PostService {
     @Transactional
     public PostResponseDto postModify(PostModifyRequestDto request) {
         Post post = findPostById(request.getPostId());
-        Plant plant = findPlantById(request.getPlantId());
-        post.update(plant, request.getTitle(), request.getContent());
+
+        post.update(request.getTitle(), request.getContent());
         String newFileName = request.getFileName();
         String currentFileName = post.getPhoto().getFileName();
 
         PhotoResponseDto photo = null;
-        if (newFileName != null && newFileName.equals(currentFileName)) {
-            photo = photoService.generatePreSignedDto(post.getId(), request.getFileName());
+        if (newFileName != null && !newFileName.equals(currentFileName)) {
+            photo = photoService.generatePreSignedDto(post.getId(), newFileName);
             post.updatePhoto(findPhotoById(photo.getPhotoId()));
         }
+        photo = photoService.generatePreSignedDto(post.getId(), currentFileName);
+
         return PostResponseDto.toDto(post, photo);
     }
 

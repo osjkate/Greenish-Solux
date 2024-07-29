@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WateringRequestDto{
-    private Long UserId;
+    private Long userId;
     private LocalDate date;
 
 }
