@@ -39,4 +39,11 @@ public class UserService {
     public void deleteAccount(Long userId) {
         userRepository.deleteById(userId);
     }
+
+    public UserInfoDto getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return UserInfoDto.of(user);
+    }
+
 }

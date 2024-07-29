@@ -1,9 +1,9 @@
 package com.solux.greenish.User.Domain;
 
+import com.solux.greenish.Environment.Domain.Environment;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import jakarta.persistence.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,14 +37,23 @@ public class User {
 
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "environment_id")
     private Environment environment;
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
     // 알림 기능 추가 예정
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
+
 
 }
 

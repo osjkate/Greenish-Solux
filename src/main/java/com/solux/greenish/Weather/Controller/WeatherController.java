@@ -1,33 +1,33 @@
-/*package com.solux.greenish.Weather.Controller;
+package com.solux.greenish.Weather.Controller;
 
-import com.solux.greenish.Location.Domain.Location;
-import com.solux.greenish.Location.Service.LocationService;
-import com.solux.greenish.Weather.Response.KmaWeatherResponse;
-import com.solux.greenish.Weather.Service.KmaWeatherService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.solux.greenish.Weather.Dto.WeatherDto;
+import com.solux.greenish.Weather.Service.WeatherService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/weather")
 public class WeatherController {
 
-    @Autowired
-    private KmaWeatherService kmaWeatherService;
+    private final WeatherService weatherService;
 
-    @Autowired
-    private LocationService locationService;
 
-    @GetMapping("/weather/forecast")
-    public KmaWeatherResponse getWeatherForecast() {
-        Location location = locationService.getCurrentLocation();
-        return kmaWeatherService.getWeatherForecast(location);
+    // 특정 사용자의 5일간의 날씨 데이터를 조회
+    @GetMapping("/forecast")
+    public ResponseEntity<List<WeatherDto>> getWeatherForecast(@RequestParam (name = "userId") Long userId) {
+        List<WeatherDto> forecast = weatherService.getWeatherForecast(userId);
+        return ResponseEntity.ok(forecast);
     }
 
-    @PostMapping("/weather/set-location")
-    public void setLocation(@RequestBody Location location) {
-        locationService.setCurrentLocation(location);
+    // 특정 위치의 현재 날씨를 조회
+    @GetMapping("/current")
+    public ResponseEntity<WeatherDto> getCurrentWeather(@RequestParam (name = "userId") Long userId) {
+        WeatherDto currentWeather = weatherService.getCurrentWeather(userId);
+        return ResponseEntity.ok(currentWeather);
     }
 }
-*/

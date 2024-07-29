@@ -43,4 +43,11 @@ public class UserController {
         userService.deleteAccount(userId);
         return ResponseEntity.ok("계정 삭제 완료");
     }
+
+    // 회원 정보 조회
+    @GetMapping("/user-info")
+    public ResponseEntity<UserInfoDto> getUserInfo(@RequestParam(name = "userId") Long userId) {
+        return ResponseEntity.ok(userService.getUserInfo(userId));
+    }
+
 }
