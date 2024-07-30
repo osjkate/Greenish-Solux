@@ -24,6 +24,7 @@ import java.util.UUID;
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
+
     @Value("${amazon.aws.bucket}")
     private String bucket;
 
@@ -74,9 +75,9 @@ public class PhotoService {
 
     // photo_id에서 조회
     @Transactional(readOnly = true)
-    public PhotoResponseDto getFilePath(Long photo_id) {
-        Photo photo = photoRepository.findById(photo_id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사진 파일이 존재하지 않습니다. "));
+    public PhotoResponseDto getFilePath(Photo photo) {
+        if (photo == null) return null;
+
         String photoPath = photo.getPhotoPath();
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, photoPath)
                 .withMethod(HttpMethod.GET);

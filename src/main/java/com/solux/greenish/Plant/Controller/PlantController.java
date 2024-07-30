@@ -30,10 +30,10 @@ public class PlantController {
     }
 
     // user_id 로 전체 식물 조회
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/user")
     public ResponseEntity<? extends BasicResponse> getAllPlantByUserId(
-            @PathVariable("user_id") Long userId) {
-        return ResponseEntity.ok(new DataResponse<>(plantService.getAllPlantByUserId(userId)));
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(new DataResponse<>(plantService.getAllPlantByUserId(token)));
     }
 
     // 식물의 watering 모두 조회
@@ -53,8 +53,9 @@ public class PlantController {
     // 식물 생성
     @PostMapping
     public ResponseEntity<? extends BasicResponse> createPlant(
+            @RequestHeader("Authorization") String token,
             @RequestBody PlantCreateRequestDto request) {
-        return ResponseEntity.ok(new DataResponse<>(plantService.createPlant(request)));
+        return ResponseEntity.ok(new DataResponse<>(plantService.createPlant(token, request)));
     }
 
 

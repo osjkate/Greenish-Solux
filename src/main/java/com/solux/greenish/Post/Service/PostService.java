@@ -11,6 +11,7 @@ import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.Plant.Repository.PlantRepository;
 import com.solux.greenish.Post.Repository.PostRepository;
 import com.solux.greenish.User.Repository.UserRepository;
+import com.solux.greenish.login.Jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+
     private final PlantRepository plantRepository;
     private final PhotoService photoService;
     private final PhotoRepository photoRepository;
+
+    private User findUserByToken(String token) {
+        return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
+    }
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
@@ -50,23 +59,25 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailResponseDto getPostDetailById(Long id) {
         Post post = findPostById(id);
-        PhotoResponseDto photo = photoService.getFilePath(post.getPhoto().getId());
+        PhotoResponseDto photo = photoService.getFilePath(post.getPhoto());
 
         return PostDetailResponseDto.of(post, photo);
     }
 
     // user의 id로 게시물 전체 조회
     @Transactional(readOnly = true)
-    public List<PostSimpleResponseDto> getAllPostByUserId(Long userId) {
-        List<Post> posts = postRepository.findAllByUserId(userId);
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+    public List<PostSimpleResponseDto> getAllPostByUserId(String token) {
+        List<Post> posts = postRepository.findAllByUserId(
+                findUserByToken(token).getId());
+
+        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
     }
 
     // plant id 로 게시물 전체 조회
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getAllPostByPlantId(Long plantId) {
         List<Post> posts = postRepository.findAllByPlantId(plantId);
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
     }
 
     // 게시물 전체 조회
@@ -74,13 +85,13 @@ public class PostService {
     public List<PostSimpleResponseDto> getAllPost() {
         List<Post> posts = postRepository.findAll();
         return posts.stream()
-                .map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+                .map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
     }
 
     // 게시물 등록
     @Transactional
-    public PostResponseDto postCreate(PostCreateRequestDto request) {
-        User user = findUserById(request.getUserId());
+    public PostResponseDto postCreate(String token, PostCreateRequestDto request) {
+        User user = findUserByToken(token);
         Plant plant = findPlantById(request.getPlantId());
         Post post = request.toEntity(user, plant);
         postRepository.save(post);

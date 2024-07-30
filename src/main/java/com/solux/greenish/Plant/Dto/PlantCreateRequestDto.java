@@ -7,7 +7,6 @@ import lombok.Getter;
 
 @Getter
 public class PlantCreateRequestDto {
-    private Long userId;
     private String distbNm;
     private String name;
     private String age;
