@@ -26,4 +26,12 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void update(String content) {
+
+    }
+
+    public void updateStatus() {
+
+    }
 }
