@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/waterings")
@@ -31,24 +33,25 @@ public class WateringController {
     }
 
     // user_id로 watering 모두 조회
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/user")
     public ResponseEntity<? extends BasicResponse> getAllWateringByUserId(
-            @PathVariable("user_id") Long userId) {
-        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByUserId(userId)));
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByUserId(token)));
     }
 
     // user_id로 완료하지 않은 watering 모두 조회
-    @GetMapping("/user/{user_id}/pre")
+    @GetMapping("/user/pre")
     public ResponseEntity<? extends BasicResponse> getAllWateringByUserIdAndStatus(
-            @PathVariable("user_id") Long userId) {
-        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByUserIdAndStatus(userId)));
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByUserIdAndStatus(token)));
     }
 
     // Date로 watering 조회
-    @GetMapping("/date")
+    @GetMapping("/date/{date}")
     public ResponseEntity<? extends BasicResponse> getAllWateringByDate(
-            @RequestBody WateringRequestDto request) {
-        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByDate(request)));
+            @RequestHeader("Authorization") String token,
+            @PathVariable("date") LocalDate date) {
+        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringByDate(token, date)));
     }
 
 

@@ -26,7 +26,7 @@ public class Watering {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // TODO : 상태 삭제
+    // TODO : 상태 삭제 -> complete null 값인지 확인
     @Enumerated(EnumType.STRING)
     private Status status;
 

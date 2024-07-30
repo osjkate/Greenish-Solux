@@ -16,7 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class PostCreateRequestDto {
-    private Long userId;
     private Long plantId;
     private String title;
     private String content;

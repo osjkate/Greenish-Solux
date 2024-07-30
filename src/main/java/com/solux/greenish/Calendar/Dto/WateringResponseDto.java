@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 public class WateringResponseDto {
     private Long wateringId;
-    private Long plantId;
+    private String plantName;
     private Status status;
     private LocalDate scheduleDate;
     private LocalDate completeDate;
@@ -24,7 +24,7 @@ public class WateringResponseDto {
     public static WateringResponseDto of(Watering watering) {
         return WateringResponseDto.builder()
                 .wateringId(watering.getId())
-                .plantId(watering.getPlant().getId())
+                .plantName(watering.getPlant().getName())
                 .status(watering.getStatus())
                 .scheduleDate(watering.getScheduleDate())
                 .completeDate(watering.getCompleteDate())

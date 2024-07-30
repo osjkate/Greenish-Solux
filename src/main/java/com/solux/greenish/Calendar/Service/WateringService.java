@@ -2,10 +2,12 @@ package com.solux.greenish.Calendar.Service;
 
 import com.solux.greenish.Calendar.Domain.Status;
 import com.solux.greenish.Calendar.Domain.Watering;
-import com.solux.greenish.Calendar.Dto.WateringIdResponse;
-import com.solux.greenish.Calendar.Dto.WateringRequestDto;
+import com.solux.greenish.Calendar.Dto.WateringIdResponseDto;
 import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
+import com.solux.greenish.User.Domain.User;
+import com.solux.greenish.User.Repository.UserRepository;
+import com.solux.greenish.login.Jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WateringService {
     private final WateringRepository wateringRepository;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
+    private User getUserByToken(String token) {
+        return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
+    }
 
     private Watering getWatering(Long wateringId) {
         return wateringRepository.findById(wateringId)
@@ -40,29 +49,32 @@ public class WateringService {
 
     // user_id로 watering 모두 조회
     @Transactional(readOnly = true)
-    public List<WateringResponseDto> getAllWateringByUserId(Long userId) {
-        return wateringRepository.findByUserId(userId)
+    public List<WateringResponseDto> getAllWateringByUserId(String token) {
+        User user = getUserByToken(token);
+        return wateringRepository.findByUserId(user.getId())
                 .stream().map(WateringResponseDto::of).toList();
     }
 
     // user_id로 완료하지 않은 watering 모두 조회
     @Transactional(readOnly = true)
-    public List<WateringResponseDto> getAllWateringByUserIdAndStatus(Long userId) {
-        return wateringRepository.findByUserIdAndStatus(userId, Status.PRE)
+    public List<WateringResponseDto> getAllWateringByUserIdAndStatus(String token) {
+        User user = getUserByToken(token);
+        return wateringRepository.findByUserIdAndStatus(user.getId(), Status.PRE)
                 .stream().map(WateringResponseDto::of).toList();
     }
 
     // Date로 watering 조회
     @Transactional(readOnly = true)
-    public List<WateringResponseDto> getAllWateringByDate(WateringRequestDto request) {
+    public List<WateringResponseDto> getAllWateringByDate(String token, LocalDate date) {
+        User user = getUserByToken(token);
 
-        return wateringRepository.findByScheduleDateAndUserId(request.getDate(), request.getUserId())
+        return wateringRepository.findByScheduleDateAndUserId(date, user.getId())
                 .stream().map(WateringResponseDto::of).toList();
     }
 
     // 물주기 완료
     @Transactional
-    public WateringIdResponse completeWatering(Long id) {
+    public WateringIdResponseDto completeWatering(Long id) {
         Watering watering = getWatering(id);
 
         watering.updateStatus();
@@ -74,14 +86,14 @@ public class WateringService {
                 .scheduleDate(watering.getCompleteDate().plusDays(watering.getWateringCycle()))
                 .build());
 
-        return WateringIdResponse.of(watering);
+        return WateringIdResponseDto.of(watering);
     }
 
     // 물주기 미완료
     @Transactional
-    public WateringIdResponse postponeWatering(Long id) {
+    public WateringIdResponseDto postponeWatering(Long id) {
         Watering watering = getWatering(id);
         watering.postponeWateringDate();
-        return WateringIdResponse.of(watering);
+        return WateringIdResponseDto.of(watering);
     }
 }

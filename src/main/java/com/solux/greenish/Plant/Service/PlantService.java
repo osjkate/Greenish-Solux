@@ -14,6 +14,7 @@ import com.solux.greenish.Plant.Repository.PlantRepository;
 import com.solux.greenish.Post.Dto.PostSimpleResponseDto;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.User.Repository.UserRepository;
+import com.solux.greenish.login.Jwt.JwtUtil;
 import com.solux.greenish.search.entity.ApiPlant;
 import com.solux.greenish.search.repository.ApiPlantRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +25,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-// TODO : 조회에 사진 추가
-
 @RequiredArgsConstructor
 @Service
 public class PlantService {
     private final PlantRepository plantRepository;
     private final WateringRepository wateringRepository;
+
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+
     private final ApiPlantRepository apiPlantRepository;
     private final PhotoRepository photoRepository;
 
     private final PhotoService photoService;
+
+    private User getUserByToken(String token) {
+        return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
+    }
 
     private Plant getPlant(Long plantId) {
         return plantRepository.findById(plantId)
@@ -65,9 +71,9 @@ public class PlantService {
 
         // post들 조회
         List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
 
-        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto().getId());
+        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto());
 
         return PlantDetailResponseDto.of(plant, posts, plantPhoto);
     }
@@ -86,14 +92,17 @@ public class PlantService {
     @Transactional(readOnly = true)
     public List<PlantSimpleResponseDto> getAllPlant() {
         List<Plant> plants = plantRepository.findAll();
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto().getId()))).toList();
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto()))).toList();
     }
 
     // user_id 로 전체 식물 조회
     @Transactional(readOnly = true)
-    public List<PlantSimpleResponseDto> getAllPlantByUserId(Long userId) {
-        List<Plant> plants = plantRepository.findByUserId(userId);
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto().getId()))).toList();
+    public List<PlantSimpleResponseDto> getAllPlantByUserId(String token) {
+        User user = getUserByToken(token);
+
+        List<Plant> plants = plantRepository.findByUserId(user.getId());
+
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto()))).toList();
 
     }
 
@@ -103,9 +112,9 @@ public class PlantService {
         Plant plant = plantRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("해당 식물을 찾을 수 없습니다. "));
         List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
 
-        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto().getId());
+        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto());
 
         return PlantDetailResponseDto.of(plant, posts, plantPhoto);
     }
@@ -113,11 +122,14 @@ public class PlantService {
     // 식물 생성
     // 물주기도 같이 생성됨
     @Transactional
-    public PlantResponseDto createPlant(PlantCreateRequestDto request) {
-        User user = getUser(request.getUserId());
+    public PlantResponseDto createPlant(String token, PlantCreateRequestDto request) {
+
+        User user = getUserByToken(token);
+
         ApiPlant apiPlant = getApiPlant(request.getDistbNm());
 
-        if (plantRepository.existsByName(request.getName())) {
+        // 해당 유저에게 같은 이름이 있는 plant가 있으면 중복 이름 설정
+        if (plantRepository.existsByNameAndUser(request.getName(), user)) {
             throw new IllegalArgumentException("해당 식물 이름이 중복됩니다. ");
         }
 
@@ -128,6 +140,7 @@ public class PlantService {
         plantRepository.save(plant);
 
         PhotoResponseDto photo = null;
+
         if (request.getFileName() != null) {
             photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
@@ -180,7 +193,7 @@ public class PlantService {
             photoService.deletePhoto(plant.getPhoto().getId());
             photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
-        } else photo = photoService.getFilePath(plant.getPhoto().getId());
+        } else photo = photoService.getFilePath(plant.getPhoto());
 
         plant.update(request.getName(), request.getAge(), request.isAlarm(),
                 waterCycle, apiPlant);

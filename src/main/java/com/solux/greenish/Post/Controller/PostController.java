@@ -30,10 +30,10 @@ public class PostController {
     }
 
     // user id로 게시물 전체 조회
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/user")
     public ResponseEntity<? extends BasicResponse> getAllPostByUserID(
-            @PathVariable("user_id") Long user_id) {
-        List<PostSimpleResponseDto> posts = postService.getAllPostByUserId(user_id);
+            @RequestHeader("Authorization") String token) {
+        List<PostSimpleResponseDto> posts = postService.getAllPostByUserId(token);
         return ResponseEntity.ok(new DataResponse<>(posts));
     }
 
@@ -54,9 +54,10 @@ public class PostController {
     // 게시물 등록
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> postCreate(
-            @Valid @RequestBody PostCreateRequestDto request) {
+            @Valid @RequestBody PostCreateRequestDto request,
+            @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(
-                new DataResponse<>(postService.postCreate(request)));
+                new DataResponse<>(postService.postCreate(token, request)));
 
     }
 
