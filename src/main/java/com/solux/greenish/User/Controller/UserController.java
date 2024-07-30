@@ -53,6 +53,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserInfo(token));
     }
 
+    // 모든 사람 정보 가져오기
     @GetMapping
     public ResponseEntity<List<UserInfoDto>> getAllUser() {
         return ResponseEntity.ok(userService.getAllUserInfo());
