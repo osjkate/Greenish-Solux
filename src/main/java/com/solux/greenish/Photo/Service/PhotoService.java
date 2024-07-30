@@ -64,9 +64,8 @@ public class PhotoService {
 
     // 포토 삭제
     @Transactional
-    public void deletePhoto(Long photoId) {
-        Photo photo = photoRepository.findById(photoId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사진을 찾을 수 없습니다. "));
+    public void deletePhoto(Photo photo) {
+        if (photo == null) return;
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, photo.getPhotoPath()));
 
         photoRepository.delete(photo);

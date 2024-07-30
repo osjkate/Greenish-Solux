@@ -144,7 +144,6 @@ public class PlantService {
         if (request.getFileName() != null) {
             photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
-
         }
         createAndSaveWateringSchedules(plant, wateringCycle);
 
@@ -190,7 +189,7 @@ public class PlantService {
         String newFileName = request.getFileName();
         String currentFileName = plant.getPhoto().getFileName();
         if (newFileName != null && !newFileName.equals(currentFileName)) {
-            photoService.deletePhoto(plant.getPhoto().getId());
+            photoService.deletePhoto(plant.getPhoto());
             photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
         } else photo = photoService.getFilePath(plant.getPhoto());
@@ -213,7 +212,9 @@ public class PlantService {
     // 식물 하드 삭제 -> 관련 게시물, 물주기 모두 삭제
     @Transactional
     public void deletePlant(Long id) {
-        plantRepository.delete(getPlant(id));
+        Plant plant = getPlant(id);
+        photoService.deletePhoto(plant.getPhoto());
+        plantRepository.delete(plant);
     }
 
     // TODO : soft delete 나중에 구현

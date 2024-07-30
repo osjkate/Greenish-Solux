@@ -130,9 +130,7 @@ public class PostService {
     public void deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다. "));
-        if (post.getPhoto() != null) {
-            photoService.deletePhoto(post.getPhoto().getId());
-        }
+        photoService.deletePhoto(post.getPhoto());
         postRepository.delete(post);
     }
 

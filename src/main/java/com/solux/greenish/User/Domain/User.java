@@ -49,6 +49,7 @@ public class User {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
     @OneToOne
     @JoinColumn(name = "photo_id")
     private Photo photo;
@@ -59,5 +60,8 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
 
+    public void updatePhoto(Photo photo) {
+        this.photo = photo;
+    }
 }
 

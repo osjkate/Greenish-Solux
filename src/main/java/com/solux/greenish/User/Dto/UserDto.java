@@ -1,5 +1,6 @@
 package com.solux.greenish.User.Dto;
 
+import com.solux.greenish.Photo.Dto.PhotoResponseDto;
 import com.solux.greenish.User.Domain.RoleType;
 import com.solux.greenish.User.Domain.User;
 import jakarta.validation.constraints.Email;
@@ -40,7 +41,7 @@ public class UserDto {
         @Email(message = "잘못된 이메일 형식입니다.")
         private String email;
 
-
+        private String fileName;
 
         public User toUser(String password) {
             return User.builder()
@@ -60,10 +61,12 @@ public class UserDto {
         private Long id;
         private String nickname;
         private String email;
+        private PhotoResponseDto photo;
 
-        public static UserInfoDto of(User user) {
+        public static UserInfoDto of(User user, PhotoResponseDto photo) {
             return UserInfoDto.builder()
                     .id(user.getId())
+                    .photo(photo)
                     .nickname(user.getNickname())
                     .email(user.getEmail())
                     .build();
