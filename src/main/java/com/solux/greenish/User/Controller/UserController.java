@@ -4,6 +4,7 @@ import com.solux.greenish.Response.BasicResponse;
 import com.solux.greenish.Response.DataResponse;
 import com.solux.greenish.User.Dto.UserDto.*;
 import com.solux.greenish.User.Service.UserService;
+import com.solux.greenish.login.Jwt.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
     // 회원 가입
     // TODO: Spring Security
     @PostMapping(path = "/signUp", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -39,15 +41,15 @@ public class UserController {
 
     // 계정 삭제
     @DeleteMapping("/delete-account")
-    public ResponseEntity<String> deleteAccount(@RequestParam(name = "userId") Long userId) {
-        userService.deleteAccount(userId);
+    public ResponseEntity<String> deleteAccount(@RequestHeader(name = "Authorization") String token) {
+        userService.deleteAccount(token);
         return ResponseEntity.ok("계정 삭제 완료");
     }
 
     // 회원 정보 조회
     @GetMapping("/user-info")
-    public ResponseEntity<UserInfoDto> getUserInfo(@RequestParam(name = "userId") Long userId) {
-        return ResponseEntity.ok(userService.getUserInfo(userId));
+    public ResponseEntity<UserInfoDto> getUserInfo(@RequestHeader(name = "Authorization") String token) {
+        return ResponseEntity.ok(userService.getUserInfo(token));
     }
 
 }
