@@ -7,6 +7,7 @@ import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.User.Dto.UserDto.*;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.User.Domain.User;
+import com.solux.greenish.login.Jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PhotoRepository photoRepository;
     private final PhotoService photoService;
+
+    private final JwtUtil jwtUtil;
 
     private Photo findPhotoById(Long photoId) {
         return photoRepository.findById(photoId)
@@ -39,6 +42,11 @@ public class UserService {
     private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 조회할 수 없습니다. "));
+    }
+
+    private User getUserByToken(String token) {
+        return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
     }
 
     public boolean isNicknameDuplicate(String nickname) {
@@ -73,8 +81,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoDto getUserInfo(Long userId) {
-        User user = getUserById(userId);
+    public UserInfoDto getUserInfo(String token) {
+        User user = getUserByToken(token);
         return UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()));
     }
 

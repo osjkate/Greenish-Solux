@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -45,8 +47,14 @@ public class UserController {
 
     // 회원 정보 조회
     @GetMapping("/user-info")
-    public ResponseEntity<UserInfoDto> getUserInfo(@RequestParam(name = "userId") Long userId) {
-        return ResponseEntity.ok(userService.getUserInfo(userId));
+    public ResponseEntity<UserInfoDto> getUserInfo(
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(userService.getUserInfo(token));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserInfoDto>> getAllUser() {
+        return ResponseEntity.ok(userService.getAllUserInfo());
     }
 
 }
