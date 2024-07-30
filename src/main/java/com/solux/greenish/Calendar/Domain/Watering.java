@@ -3,15 +3,15 @@ package com.solux.greenish.Calendar.Domain;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.User.Domain.User;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 // 물주기 일정
 @Entity @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Watering {
     @Id
     @Column(name = "watering_id")

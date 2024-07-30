@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PhotoController {
     private final PhotoService photoService;
-    @PostMapping
+    @PostMapping("/photo")
     public ResponseEntity<? extends BasicResponse> getPreSingedUrl(
             @RequestBody PresignedUrlDto request) {
         return ResponseEntity.ok(new DataResponse<>(photoService.getPreSignedUrl(request)));

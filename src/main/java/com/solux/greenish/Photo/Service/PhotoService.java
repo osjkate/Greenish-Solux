@@ -35,14 +35,18 @@ public class PhotoService {
         //String prefix, String fileName
         String photoPath = createPath(String.valueOf(request.getPrefix()), request.getFileName());
 
+
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, photoPath, HttpMethod.GET);
+        URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
+
         Photo photo = Photo.builder()
                 .photoPath(photoPath)
                 .fileName(request.getFileName())
                 .build();
+
         photoRepository.save(photo);
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, photoPath, HttpMethod.GET);
-        URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
         return PhotoResponseDto.builder()
                 .photoId(photo.getId())
                 .url(url.toString())

@@ -6,7 +6,6 @@ import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Photo.Dto.PhotoResponseDto;
-import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
@@ -68,14 +67,12 @@ public class PlantService {
         List<PostSimpleResponseDto> posts = plant.getPosts()
                 .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
 
-        // TODO : postService 수정예정
-        List<PhotoResponseDto> postPhotos = posts.stream().map((post) -> photoService.getFilePath(post.getId())).toList();
         PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto().getId());
 
         return PlantDetailResponseDto.of(plant, posts, plantPhoto);
     }
 
-    // 식물의 물주기 조회
+    // 식물의 물주기 모두 조회
     @Transactional(readOnly = true)
     public PlantWateringResponseDto getWatering(Long plantId) {
         // 워터링 조회하면서 완료한 것과 완료하지 않은 것으로 나눠서 조회
@@ -88,22 +85,29 @@ public class PlantService {
     // 식물 전체 조회
     @Transactional(readOnly = true)
     public List<PlantSimpleResponseDto> getAllPlant() {
-        return plantRepository.findAll()
-                .stream().map(PlantSimpleResponseDto::of).toList();
+        List<Plant> plants = plantRepository.findAll();
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto().getId()))).toList();
     }
 
     // user_id 로 전체 식물 조회
     @Transactional(readOnly = true)
     public List<PlantSimpleResponseDto> getAllPlantByUserId(Long userId) {
-        return plantRepository.findByUserId(userId)
-                .stream().map(PlantSimpleResponseDto::of).toList();
+        List<Plant> plants = plantRepository.findByUserId(userId);
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto().getId()))).toList();
+
     }
 
     // 이름으로 조회
     @Transactional(readOnly = true)
-    public PlantSimpleResponseDto getPlantByName(String name) {
-        return plantRepository.findByName(name).map(PlantSimpleResponseDto::of)
-                .orElseThrow(() -> new IllegalArgumentException("해당 식물을 조회할 수 없습니다. "));
+    public PlantDetailResponseDto getPlantByName(String name) {
+        Plant plant = plantRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("해당 식물을 찾을 수 없습니다. "));
+        List<PostSimpleResponseDto> posts = plant.getPosts()
+                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto().getId()))).toList();
+
+        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto().getId());
+
+        return PlantDetailResponseDto.of(plant, posts, plantPhoto);
     }
 
     // 식물 생성
@@ -124,14 +128,17 @@ public class PlantService {
         plantRepository.save(plant);
 
         PhotoResponseDto photo = null;
-        if (request.getFilename() != null) {
-            photo = photoService.generatePreSignedDto(plant.getId(), request.getFilename());
+        if (request.getFileName() != null) {
+            photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
 
         }
         createAndSaveWateringSchedules(plant, wateringCycle);
 
-        return PlantResponseDto.toDto(plant, photo);
+        return PlantResponseDto.builder()
+                .plantId(plant.getId())
+                .photo(photo)
+                .build();
     }
 
 
@@ -139,7 +146,9 @@ public class PlantService {
         List<Watering> waterings = new ArrayList<>();
         Watering watering = Watering.builder()
                 .plant(plant)
+                .user(getUser(plant.getUser().getId()))
                 .status(Status.PRE)
+                .wateringCycle(wateringCycle)
                 .scheduleDate(LocalDate.now().plusDays(wateringCycle))
                 .build();
 
@@ -171,7 +180,7 @@ public class PlantService {
             photoService.deletePhoto(plant.getPhoto().getId());
             photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
-        }
+        } else photo = photoService.getFilePath(plant.getPhoto().getId());
 
         plant.update(request.getName(), request.getAge(), request.isAlarm(),
                 waterCycle, apiPlant);
@@ -181,7 +190,10 @@ public class PlantService {
                 .orElseThrow(() -> new IllegalArgumentException("물주기 주기가 존재하지 않습니다. "));
         watering.updateWateringDate(plant.getWateringCycle());
 
-        return PlantResponseDto.toDto(plant, photo);
+        return PlantResponseDto.builder()
+                .plantId(plant.getId())
+                .photo(photo)
+                .build();
 
     }
 

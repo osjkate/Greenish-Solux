@@ -61,7 +61,7 @@ public class PostController {
     }
 
     // 게시물 수정
-    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> modifyPost(
             @RequestBody PostModifyRequestDto request) {
         return ResponseEntity.ok(new DataResponse<>(postService.postModify(request)));

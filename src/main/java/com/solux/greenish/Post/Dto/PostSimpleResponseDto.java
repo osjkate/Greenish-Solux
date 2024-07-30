@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class PostSimpleResponseDto {
-    private Long id;
+    private Long postId;
     private String title;
     private LocalDate createdAt;
     private String content;
@@ -18,7 +18,7 @@ public class PostSimpleResponseDto {
 
     public static PostSimpleResponseDto of(Post post, PhotoResponseDto photo) {
         return PostSimpleResponseDto.builder()
-                .id(post.getId())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .createdAt(post.getCreatedAt())
                 .content(post.getContent())

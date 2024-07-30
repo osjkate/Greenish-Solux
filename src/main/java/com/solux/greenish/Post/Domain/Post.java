@@ -39,9 +39,8 @@ public class Post {
     private Photo photo;
 
     // post 수정 함수
-    public void update(Plant plant, String title,
+    public void update(String title,
                        String content) {
-        this.plant = plant;
         this.title = title;
         this.content = content;
     }

@@ -1,8 +1,12 @@
 package com.solux.greenish.Plant.Dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlantModifyRequestDto {
     private Long plantId;
     private String distbNm;
