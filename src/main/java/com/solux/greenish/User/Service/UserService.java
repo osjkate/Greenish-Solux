@@ -74,10 +74,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteAccount(Long userId) {
-        Photo photo = getUserById(userId).getPhoto();
-        photoService.deletePhoto(photo);
-        userRepository.deleteById(userId);
+    public void deleteAccount(String token) {
+        User user = getUserByToken(token);
+        photoService.deletePhoto(user.getPhoto());
+        userRepository.delete(user);
     }
 
     @Transactional(readOnly = true)

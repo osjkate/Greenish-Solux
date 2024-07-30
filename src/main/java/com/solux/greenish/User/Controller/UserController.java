@@ -40,8 +40,9 @@ public class UserController {
 
     // 계정 삭제
     @DeleteMapping("/delete-account")
-    public ResponseEntity<String> deleteAccount(@RequestParam(name = "userId") Long userId) {
-        userService.deleteAccount(userId);
+    public ResponseEntity<String> deleteAccount(
+            @RequestHeader("Authorization") String token) {
+        userService.deleteAccount(token);
         return ResponseEntity.ok("계정 삭제 완료");
     }
 
