@@ -8,24 +8,21 @@ import com.solux.greenish.User.Dto.UserDto.*;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.login.Jwt.JwtUtil;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Validated
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PhotoRepository photoRepository;
     private final PhotoService photoService;
+
     private final JwtUtil jwtUtil;
 
     private Photo findPhotoById(Long photoId) {
@@ -47,12 +44,17 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 조회할 수 없습니다. "));
     }
 
+    private User getUserByToken(String token) {
+        return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
+    }
+
     public boolean isNicknameDuplicate(String nickname) {
         return userRepository.existsByNickname(nickname);
     }
 
     @Transactional
-    public IdResponse signUp(@Valid UserRegistDto request) {
+    public IdResponse signUp(UserRegistDto request) {
         if (isEmailDuplicate(request.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 이메일입니다. ");
         }
@@ -72,21 +74,15 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteAccount(String token) {
-        String email = jwtUtil.getEmail(token.split(" ")[1]);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
-        Photo photo = user.getPhoto();
+    public void deleteAccount(Long userId) {
+        Photo photo = getUserById(userId).getPhoto();
         photoService.deletePhoto(photo);
-        userRepository.deleteById(user.getId());
+        userRepository.deleteById(userId);
     }
 
     @Transactional(readOnly = true)
     public UserInfoDto getUserInfo(String token) {
-        String email = jwtUtil.getEmail(token.split(" ")[1]);
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 조회할 수 없습니다."));
-
+        User user = getUserByToken(token);
         return UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()));
     }
 
@@ -96,6 +92,5 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map((user) -> UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()))).toList();
     }
-
 
 }
