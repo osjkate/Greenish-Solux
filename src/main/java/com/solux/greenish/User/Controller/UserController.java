@@ -16,7 +16,6 @@ public class UserController {
 
     private final UserService userService;
     // 회원 가입
-    // TODO: Spring Security
     @PostMapping(path = "/signUp", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> signUp(
             @Valid @RequestBody UserRegistDto request
