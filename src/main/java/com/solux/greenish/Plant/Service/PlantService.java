@@ -117,7 +117,8 @@ public class PlantService {
         User user = getUser(request.getUserId());
         ApiPlant apiPlant = getApiPlant(request.getDistbNm());
 
-        if (plantRepository.existsByName(request.getName())) {
+        // 해당 유저에게 같은 이름이 있는 plant가 있으면 중복 이름 설정
+        if (plantRepository.existsByNameAndUser(request.getName(), user)) {
             throw new IllegalArgumentException("해당 식물 이름이 중복됩니다. ");
         }
 
