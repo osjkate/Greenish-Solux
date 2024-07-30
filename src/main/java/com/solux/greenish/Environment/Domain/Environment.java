@@ -25,8 +25,6 @@ public class Environment {
 
     private double ave_humid;
 
-    private String field;
-
     private double latitude;  // 위도
     private double longitude; // 경도
 

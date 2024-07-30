@@ -38,8 +38,8 @@ public class WeatherService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Transactional(readOnly = true)
-    public List<WeatherDto> getWeatherForecast(Long userId) {
-        User user = userRepository.findById(userId)
+    public List<WeatherDto> getWeatherForecast(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
         Environment environment = user.getEnvironment();
@@ -54,8 +54,8 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
-    public WeatherDto getCurrentWeather(Long userId) {
-        User user = userRepository.findById(userId)
+    public WeatherDto getCurrentWeather(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
         Environment environment = user.getEnvironment();

@@ -17,8 +17,8 @@ public class EnvironmentController {
 
     // 위치 업데이트
     @PutMapping("/update-location")
-    public ResponseEntity<Void> updateLocation(@RequestParam(name="userId") Long userId, @RequestBody Environment environment) {
-        environmentService.updateLocation(userId, environment);
+    public ResponseEntity<Void> updateLocation(@RequestHeader(name = "Authorization") String token, @RequestBody Environment environment) {
+        environmentService.updateLocation(token, environment);
         return ResponseEntity.ok().build();
     }
 
