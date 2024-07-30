@@ -20,6 +20,7 @@ public class PostCreateRequestDto {
     private String title;
     private String content;
     private String filename;
+
     public Post toEntity(User user, Plant plant) {
         return Post.builder()
                 .user(user)
