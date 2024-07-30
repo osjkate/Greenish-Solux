@@ -2,8 +2,7 @@ package com.solux.greenish.Calendar.Service;
 
 import com.solux.greenish.Calendar.Domain.Status;
 import com.solux.greenish.Calendar.Domain.Watering;
-import com.solux.greenish.Calendar.Dto.WateringIdResponse;
-import com.solux.greenish.Calendar.Dto.WateringRequestDto;
+import com.solux.greenish.Calendar.Dto.WateringIdResponseDto;
 import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
 import com.solux.greenish.User.Domain.User;
@@ -75,7 +74,7 @@ public class WateringService {
 
     // 물주기 완료
     @Transactional
-    public WateringIdResponse completeWatering(Long id) {
+    public WateringIdResponseDto completeWatering(Long id) {
         Watering watering = getWatering(id);
 
         watering.updateStatus();
@@ -87,14 +86,14 @@ public class WateringService {
                 .scheduleDate(watering.getCompleteDate().plusDays(watering.getWateringCycle()))
                 .build());
 
-        return WateringIdResponse.of(watering);
+        return WateringIdResponseDto.of(watering);
     }
 
     // 물주기 미완료
     @Transactional
-    public WateringIdResponse postponeWatering(Long id) {
+    public WateringIdResponseDto postponeWatering(Long id) {
         Watering watering = getWatering(id);
         watering.postponeWateringDate();
-        return WateringIdResponse.of(watering);
+        return WateringIdResponseDto.of(watering);
     }
 }

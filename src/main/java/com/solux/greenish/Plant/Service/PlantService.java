@@ -25,9 +25,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-// TODO : 조회에 사진 추가
-
 @RequiredArgsConstructor
 @Service
 public class PlantService {
