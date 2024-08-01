@@ -4,19 +4,19 @@ import com.solux.greenish.Response.BasicResponse;
 import com.solux.greenish.Response.DataResponse;
 import com.solux.greenish.User.Dto.UserDto.*;
 import com.solux.greenish.User.Service.UserService;
-import com.solux.greenish.login.Jwt.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final JwtUtil jwtUtil;
     // 회원 가입
     @PostMapping(path = "/signUp", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> signUp(
@@ -40,15 +40,23 @@ public class UserController {
 
     // 계정 삭제
     @DeleteMapping("/delete-account")
-    public ResponseEntity<String> deleteAccount(@RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<String> deleteAccount(
+            @RequestHeader("Authorization") String token) {
         userService.deleteAccount(token);
         return ResponseEntity.ok("계정 삭제 완료");
     }
 
     // 회원 정보 조회
     @GetMapping("/user-info")
-    public ResponseEntity<UserInfoDto> getUserInfo(@RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<UserInfoDto> getUserInfo(
+            @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(userService.getUserInfo(token));
+    }
+
+    // 모든 사람 정보 가져오기
+    @GetMapping
+    public ResponseEntity<List<UserInfoDto>> getAllUser() {
+        return ResponseEntity.ok(userService.getAllUserInfo());
     }
 
 }

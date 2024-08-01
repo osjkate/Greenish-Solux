@@ -12,8 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PostDetailResponseDto {
     private Long postId;
-    private Long userId;
-    private Long plantId;
+    private String plantName;
     private String title;
     private String content;
     private LocalDate createdAt;
@@ -22,8 +21,7 @@ public class PostDetailResponseDto {
     public static PostDetailResponseDto of(Post post, PhotoResponseDto photo) {
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
-                .userId(post.getUser().getId())
-                .plantId(post.getPlant().getId())
+                .plantName(post.getPlant().getName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())

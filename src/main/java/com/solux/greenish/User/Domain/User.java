@@ -1,6 +1,7 @@
 package com.solux.greenish.User.Domain;
 
 import com.solux.greenish.Environment.Domain.Environment;
+import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
 import jakarta.persistence.*;
@@ -46,11 +47,18 @@ public class User {
         this.environment = environment;
     }
 
+    @OneToOne
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
+
     // 알림 기능 추가 예정
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
 
+    public void updatePhoto(Photo photo) {
+        this.photo = photo;
+    }
 }
 
