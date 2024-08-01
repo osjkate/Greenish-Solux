@@ -52,7 +52,12 @@ public class Watering {
 
 
     public void updateStatus() {
-        status = Status.COMPLETED;
-        completeDate = scheduleDate;
+        if (status == Status.PRE) {
+            status = Status.COMPLETED;
+            completeDate = scheduleDate;
+        } else {
+            status = Status.PRE;
+            completeDate = null;
+        }
     }
 }

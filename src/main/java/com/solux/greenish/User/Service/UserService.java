@@ -25,11 +25,6 @@ public class UserService {
 
     private final JwtUtil jwtUtil;
 
-    private Photo findPhotoById(Long photoId) {
-        return photoRepository.findById(photoId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사진을 조회할 수 없습니다."));
-    }
-
     public boolean isEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -37,11 +32,6 @@ public class UserService {
     private Photo getPhoto(Long photoId) {
         return photoRepository.findById(photoId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사진을 조회할 수 없습니다. "));
-    }
-
-    private User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 조회할 수 없습니다. "));
     }
 
     private User getUserByToken(String token) {
@@ -88,7 +78,6 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserInfoDto> getAllUserInfo() {
-        List<User> users = userRepository.findAll();
         return userRepository.findAll().stream()
                 .map((user) -> UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()))).toList();
     }
