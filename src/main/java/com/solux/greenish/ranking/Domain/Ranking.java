@@ -18,7 +18,6 @@ public class Ranking {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
     private int recordCount;
     private int userRank;
 

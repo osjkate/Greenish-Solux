@@ -1,6 +1,7 @@
 package com.solux.greenish.ranking.Service;
 
 import com.solux.greenish.Post.Repository.PostRepository;
+import com.solux.greenish.User.Domain.RoleType;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.login.Jwt.JwtUtil;
@@ -11,6 +12,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -64,12 +67,7 @@ public class RankingService {
         System.out.println("8888888888888888888???????????save problem입니다*********************************");
 
     }
-    @PostConstruct
-    public void init() {
-        if (rankingRepository.count() == 0) {
-            updateRanking();
-        }
-    }
+
 
     private User getUserByToken(String token) {
         return userRepository.findByEmail(jwtUtil.getEmail(token.split(" ")[1]))
@@ -91,5 +89,17 @@ public class RankingService {
         response.put("MyRank", userRankDto);
         response.put("TopUsers", topUsers);
         return response;
+    }
+    //강제업뎃
+    public int UpdateByAdmin(String token){
+        String msg;
+        User user = getUserByToken(token);
+        if (user.getRole() == RoleType.ADMIN) {
+            updateRanking();
+            return 1;
+        } else {
+            return 2;
+        }
+
     }
 }
