@@ -18,7 +18,7 @@ public class WateringScheduleService {
     public void WateringPostpone() {
         List<Watering> waterings = wateringRepository.findAll();
         for (Watering w : waterings) {
-            if (w.getStatus() == Status.PRE && w.getScheduleDate().isEqual(LocalDate.now())) {
+            if (w.getStatus() == Status.PRE && w.getScheduleDate().minusDays(1).isEqual(LocalDate.now())) {
                 wateringService.postponeWatering(w.getId());
             }
         }
