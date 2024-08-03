@@ -1,5 +1,6 @@
 package com.solux.greenish.User.Dto;
 
+import com.solux.greenish.Photo.Dto.PhotoResponseDto;
 import com.solux.greenish.User.Domain.RoleType;
 import com.solux.greenish.User.Domain.User;
 import jakarta.validation.constraints.Email;
@@ -26,19 +27,21 @@ public class UserDto {
     @AllArgsConstructor
     @Builder
     public static class UserRegistDto {
-        @NotBlank
+        @NotBlank(message = "닉네임을 입력해주세요.")
         private String nickname;
 
         @Builder.Default
         private RoleType role = RoleType.USER;
 
-        @NotBlank
+        @NotBlank(message = "비밀번호를 입력해주세요.")
         private String password;
 
 
-        @Email(message = "잘못된 이메일 형식입니다. ")
+        @NotBlank(message = "이메일을 입력해주세요.")
+        @Email(message = "잘못된 이메일 형식입니다.")
         private String email;
 
+        private String fileName;
 
         public User toUser(String password) {
             return User.builder()
@@ -49,4 +52,25 @@ public class UserDto {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfoDto {
+        private Long id;
+        private String nickname;
+        private String email;
+        private String photoUrl;
+
+        public static UserInfoDto of(User user, String photoUrl) {
+            return UserInfoDto.builder()
+                    .id(user.getId())
+                    .photoUrl(photoUrl)
+                    .nickname(user.getNickname())
+                    .email(user.getEmail())
+                    .build();
+        }
+    }
+
 }

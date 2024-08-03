@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'java'
 }
 
 group = 'com.solux'
@@ -36,22 +36,36 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-	annotationProcessor 'org.projectlombok:lombok:1.18.34'
+	// MySQL Connector
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'org.modelmapper:modelmapper:2.4.4'
-	// Jackson Databind 의존성
+	// ModelMapper
+	implementation 'org.modelmapper:modelmapper:3.0.0'
+
+	// Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Jackson Databind dependencies
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
- 
-	// Jackson Dataformat XML 의존성
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
 	implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
 	implementation 'javax.activation:activation:1.1.1'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.566'
 }
 
 tasks.named('test') {

@@ -1,7 +1,6 @@
 package com.solux.greenish.Post.Controller;
 
-import com.solux.greenish.Post.Dto.PostDto.*;
-import com.solux.greenish.Post.Dto.PostDto.PostDetailDto;
+import com.solux.greenish.Post.Dto.*;
 import com.solux.greenish.Response.BasicResponse;
 import com.solux.greenish.Response.DataResponse;
 import com.solux.greenish.Post.Service.PostService;
@@ -25,16 +24,16 @@ public class PostController {
     @GetMapping("/{post_id}")
     public ResponseEntity<? extends BasicResponse> getPostById(
             @PathVariable("post_id") Long id) {
-        PostDetailDto postDetail = postService.getPostDetailById(id);
+        PostDetailResponseDto postDetail = postService.getPostDetailById(id);
         return ResponseEntity.ok(new DataResponse<>(postDetail));
 
     }
 
     // user id로 게시물 전체 조회
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/user")
     public ResponseEntity<? extends BasicResponse> getAllPostByUserID(
-            @PathVariable("user_id") Long user_id) {
-        List<PostSimpleDto> posts = postService.getAllPostByUserId(user_id);
+            @RequestHeader("Authorization") String token) {
+        List<PostSimpleResponseDto> posts = postService.getAllPostByUserId(token);
         return ResponseEntity.ok(new DataResponse<>(posts));
     }
 
@@ -42,7 +41,7 @@ public class PostController {
     @GetMapping("/plant/{plant_id}")
     public ResponseEntity<? extends BasicResponse> getAllPostByPlantID(
             @PathVariable("plant_id") Long plant_id) {
-        List<PostSimpleDto> posts = postService.getAllPostByPlantId(plant_id);
+        List<PostSimpleResponseDto> posts = postService.getAllPostByPlantId(plant_id);
         return ResponseEntity.ok(new DataResponse<>(posts));
     }
 
@@ -55,21 +54,18 @@ public class PostController {
     // 게시물 등록
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> postCreate(
-            @Valid @RequestBody PostCreateDto request
-    ) {
+            @Valid @RequestBody PostCreateRequestDto request,
+            @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(
-                new DataResponse<IdResponse>(postService.postCreate(request))
-        );
+                new DataResponse<>(postService.postCreate(token, request)));
 
     }
 
     // 게시물 수정
-    @PatchMapping("/{post_id}")
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<? extends BasicResponse> modifyPost(
-            @PathVariable("post_id") Long post_id,
-            @RequestBody PostModifyDto request) {
-        postService.postModify(post_id, request);
-        return ResponseEntity.ok().build();
+            @RequestBody PostModifyRequestDto request) {
+        return ResponseEntity.ok(new DataResponse<>(postService.postModify(request)));
     }
 
     // 게시물 삭제
