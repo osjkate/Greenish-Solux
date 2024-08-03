@@ -1,5 +1,6 @@
 package com.solux.greenish.search.entity;
 
+import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.watercycle.WaterCycle;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -49,7 +50,7 @@ public class ApiPlant {
     private String  flclrCodeNm; //꽃컬러
     private String winterLwetTpCodeNm; //최저온도
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "waterCycle_id")
     private WaterCycle waterCycle;
 }

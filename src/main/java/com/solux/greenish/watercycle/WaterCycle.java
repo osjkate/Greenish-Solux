@@ -12,7 +12,5 @@ public class WaterCycle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "waterCycle")
-    private ApiPlant apiPlant;
     private int cycle;
 }
