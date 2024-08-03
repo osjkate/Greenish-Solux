@@ -75,7 +75,7 @@ public class PhotoService {
 
     // CDN Url 생성함수
     public String getCDNUrl(String prefix, String imageUrl) {
-        return "http://" + domain + "/" + prefix + "/" + imageUrl;
+        return domain + "/" + prefix + "/" + imageUrl;
     }
 
     private Date getPresignedUrlExpiration() {
