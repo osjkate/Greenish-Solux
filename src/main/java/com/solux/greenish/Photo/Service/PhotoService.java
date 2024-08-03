@@ -75,9 +75,9 @@ public class PhotoService {
     }
 
     // CDN Url 생성함수
-    public String getCDNUrl(String prefix, String imageUrl) {
-        if (prefix == null || imageUrl == null) return null;
-        return domain + "/" + prefix + "/" + imageUrl;
+    public String getCDNUrl(String prefix, String fileName) {
+        if (prefix == null || fileName == null) return null;
+        return domain + "/" + prefix + "/" + fileName;
     }
 
     private Date getPresignedUrlExpiration() {

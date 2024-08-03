@@ -12,6 +12,7 @@ import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Plant.Dto.*;
 import com.solux.greenish.Plant.Repository.PlantRepository;
+import com.solux.greenish.Post.Domain.Post;
 import com.solux.greenish.Post.Dto.PostSimpleResponseDto;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.User.Repository.UserRepository;
@@ -70,15 +71,22 @@ public class PlantService {
         // plant 찾기
         Plant plant = getPlant(id);
 
-        // post들 조회
-        List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post,
-                        photoService.getCDNUrl("post/" + plant.getId(),
-                                plant.getPhoto().getFileName()))).toList();
+        List<PostSimpleResponseDto> responsePost = new ArrayList<>();
+        List<Post> posts = plant.getPosts();
+        for (Post post : posts) {
+            String imageUrl = null;
+            if (post.getPhoto() != null) {
+                imageUrl = photoService.getCDNUrl("post/" + plant.getId(), plant.getPhoto().getFileName());
+            }
+            responsePost.add(PostSimpleResponseDto.of(post, imageUrl));
+        }
 
-        String plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+        String plantPhotoUrl = null;
+        if (plant.getPhoto() != null) {
+            plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+        }
 
-        return PlantDetailResponseDto.of(plant, posts, plantPhotoUrl);
+        return PlantDetailResponseDto.of(plant, responsePost, plantPhotoUrl);
     }
 
     // 식물의 물주기 모두 조회
@@ -95,8 +103,16 @@ public class PlantService {
     @Transactional(readOnly = true)
     public List<PlantSimpleResponseDto> getAllPlant() {
         List<Plant> plants = plantRepository.findAll();
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant,
-                photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
+
+        List<PlantSimpleResponseDto> response = new ArrayList<>();
+        for (Plant plant : plants) {
+            String imageUrl = null;
+            if (plant.getPhoto() != null) {
+                imageUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+            }
+            response.add(PlantSimpleResponseDto.of(plant, imageUrl));
+        }
+        return response;
     }
 
     // user_id 로 전체 식물 조회
@@ -106,9 +122,15 @@ public class PlantService {
 
         List<Plant> plants = plantRepository.findByUserId(user.getId());
 
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant,
-                photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
-
+        List<PlantSimpleResponseDto> response = new ArrayList<>();
+        for (Plant plant : plants) {
+            String imageUrl = null;
+            if (plant.getPhoto() != null) {
+                imageUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+            }
+            response.add(PlantSimpleResponseDto.of(plant, imageUrl));
+        }
+        return response;
     }
 
     // 이름으로 조회
@@ -116,13 +138,22 @@ public class PlantService {
     public PlantDetailResponseDto getPlantByName(String name) {
         Plant plant = plantRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("해당 식물을 찾을 수 없습니다. "));
-        List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post,
-                        photoService.getCDNUrl("post/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
+        List<PostSimpleResponseDto> responsePost = new ArrayList<>();
+        List<Post> posts = plant.getPosts();
+        for (Post post : posts) {
+            String imageUrl = null;
+            if (post.getPhoto() != null) {
+                imageUrl = photoService.getCDNUrl("post/" + plant.getId(), plant.getPhoto().getFileName());
+            }
+            responsePost.add(PostSimpleResponseDto.of(post, imageUrl));
+        }
 
-        String plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());;
+        String plantPhotoUrl = null;
+        if (plant.getPhoto() != null) {
+            plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+        }
 
-        return PlantDetailResponseDto.of(plant, posts, plantPhotoUrl);
+        return PlantDetailResponseDto.of(plant, responsePost, plantPhotoUrl);
     }
 
     // 식물 생성

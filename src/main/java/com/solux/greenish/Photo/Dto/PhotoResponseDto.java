@@ -12,4 +12,9 @@ import lombok.NoArgsConstructor;
 public class PhotoResponseDto {
     private Long photoId;
     private String url;
+
+    public String getUrlNull() {
+        if (url == null) return null;
+        return url;
+    }
 }
