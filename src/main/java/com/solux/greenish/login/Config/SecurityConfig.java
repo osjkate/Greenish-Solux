@@ -55,7 +55,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-
+                        .requestMatchers("/", "/**").permitAll()
                         .anyRequest().permitAll());
 
 
