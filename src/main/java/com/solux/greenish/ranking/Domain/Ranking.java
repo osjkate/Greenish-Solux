@@ -5,21 +5,26 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Entity
 @NoArgsConstructor
-
 public class Ranking {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @OneToOne
-    @MapsId
     @JoinColumn(name = "user_id")
-    private User user; //아이디
+    private User user;
+
     private int recordCount;
-    private int rank;
+    private int userRank;
 
-
-    public Ranking(User user, int recordCount, int i) {
+    public Ranking(User user, int recordCount, int userRank) {
+        this.user = user;
+        this.recordCount = recordCount;
+        this.userRank = userRank;
     }
 }
