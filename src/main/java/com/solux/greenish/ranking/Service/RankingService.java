@@ -8,6 +8,7 @@ import com.solux.greenish.login.Jwt.JwtUtil;
 import com.solux.greenish.ranking.Domain.Ranking;
 import com.solux.greenish.ranking.Dto.RankingDto;
 import com.solux.greenish.ranking.Repository.RankingRepository;
+import com.solux.greenish.ranking.dummy;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 
@@ -108,6 +110,6 @@ public class RankingService {
         } else {
             return 2;
         }
-
     }
+
 }
