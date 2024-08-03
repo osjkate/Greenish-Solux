@@ -23,4 +23,6 @@ public interface WateringRepository extends JpaRepository<Watering, Long> {
 
     List<Watering> findByScheduleDateAndUserId(LocalDate scheduleDate, Long userId);
 
+    List<Watering> findByUserIdAndScheduleDateAfter(Long userId, LocalDate date);
+
 }

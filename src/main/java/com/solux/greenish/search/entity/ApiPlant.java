@@ -51,6 +51,6 @@ public class ApiPlant {
     private String winterLwetTpCodeNm; //최저온도
 
     @ManyToOne
-    @JoinColumn(name = "waterCycle_id")
+    @JoinColumn(name = "water_cycle_id")
     private WaterCycle waterCycle;
 }

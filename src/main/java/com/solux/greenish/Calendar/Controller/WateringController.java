@@ -68,4 +68,10 @@ public class WateringController {
             @PathVariable("watering_id") Long wateringId) {
         return ResponseEntity.ok(new DataResponse<>(wateringService.postponeWatering(wateringId)));
     }
+
+    @GetMapping("/main")
+    public ResponseEntity<? extends BasicResponse> getWateringForMain(
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(new DataResponse<>(wateringService.getAllWateringSinceToday(token)));
+    }
 }

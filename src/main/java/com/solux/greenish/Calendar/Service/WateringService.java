@@ -4,7 +4,11 @@ import com.solux.greenish.Calendar.Domain.Status;
 import com.solux.greenish.Calendar.Domain.Watering;
 import com.solux.greenish.Calendar.Dto.WateringIdResponseDto;
 import com.solux.greenish.Calendar.Dto.WateringResponseDto;
+import com.solux.greenish.Calendar.Dto.WateringResponseMainDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
+import com.solux.greenish.Photo.Repository.PhotoRepository;
+import com.solux.greenish.Photo.Service.PhotoService;
+import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.login.Jwt.JwtUtil;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +25,7 @@ import java.util.List;
 public class WateringService {
     private final WateringRepository wateringRepository;
     private final UserRepository userRepository;
+    private final PhotoService photoService;
     private final JwtUtil jwtUtil;
 
     private User getUserByToken(String token) {
@@ -95,5 +101,22 @@ public class WateringService {
         Watering watering = getWatering(id);
         watering.postponeWateringDate();
         return WateringIdResponseDto.of(watering);
+    }
+
+    // 메인화면 물주기 조회
+    @Transactional(readOnly = true)
+    public List<WateringResponseMainDto> getAllWateringSinceToday(String token) {
+        User user = getUserByToken(token);
+        List<WateringResponseMainDto> response = new ArrayList<>();
+        List<Watering> waterings = wateringRepository.findByUserIdAndScheduleDateAfter(user.getId(), LocalDate.now());
+        for (Watering w : waterings) {
+            Plant plant = w.getPlant();
+            String imageUrl = null;
+            if (w.getPlant().getPhoto() != null) {
+                imageUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
+            }
+            response.add(WateringResponseMainDto.toDto(w, imageUrl));
+        }
+        return response;
     }
 }
