@@ -34,6 +34,14 @@ public class RankingService {
     private final PostRepository postRepository;
     private final RankingRepository rankingRepository;
 
+    @PostConstruct
+    @Transactional
+    public void initializeRankingData() {
+        if (rankingRepository.count() == 0) {
+            System.out.println("Initializing ranking data...");
+            updateRanking();
+        }
+    }
 
     // 매주 월요일에 랭킹 초기화
     @Scheduled(cron = "0 0 0 * * MON")

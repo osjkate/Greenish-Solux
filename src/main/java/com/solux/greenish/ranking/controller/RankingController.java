@@ -28,7 +28,7 @@ public class RankingController {
         return new ResponseEntity<>(userRanking, HttpStatus.OK);
     }
     //랭킹 강제 업뎃
-    @PostMapping("/update")
+    @GetMapping("/update")
     public ResponseEntity<String> updateRanking(@RequestHeader("Authorization") String token) {
         int result=rankingService.UpdateByAdmin(token);
         if (result==1){

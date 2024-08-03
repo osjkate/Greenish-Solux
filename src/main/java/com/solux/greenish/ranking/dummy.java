@@ -30,7 +30,6 @@ public class dummy {
     @PostConstruct
     @Transactional
     public void init() {
-        // 필요한 경우 주석을 제거하여 초기화할 때 더미 데이터를 생성합니다.
         deleteDummyUsersAndPosts();
         createDummyUsersAndPosts();
     }
