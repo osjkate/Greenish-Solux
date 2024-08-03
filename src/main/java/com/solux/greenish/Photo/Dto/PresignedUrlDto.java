@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PresignedUrlDto {
-    private Long prefix;
+    private String prefix;
     private String fileName;
 }

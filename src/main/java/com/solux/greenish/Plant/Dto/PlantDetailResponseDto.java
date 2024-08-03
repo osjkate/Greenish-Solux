@@ -22,15 +22,15 @@ public class PlantDetailResponseDto {
     private String code;
     private int watercycle;
     private List<PostSimpleResponseDto> posts = new ArrayList<>();
-    private PhotoResponseDto photo;
+    private String photoUrl;
 
-    public static PlantDetailResponseDto of(Plant plant, List<PostSimpleResponseDto> posts, PhotoResponseDto photo) {
+    public static PlantDetailResponseDto of(Plant plant, List<PostSimpleResponseDto> posts, String photoUrl) {
         return PlantDetailResponseDto.builder()
                 .id(plant.getId())
                 .name(plant.getName())
                 .watercycle(plant.getWateringCycle())
                 .posts(posts)
-                .photo(photo)
+                .photoUrl(photoUrl)
                 .build();
     }
 }

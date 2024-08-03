@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @Getter
 public class PlantSimpleResponseDto {
     private Long plantId;
-    private PhotoResponseDto photo;
+    private String photoUrl;
 
-    public static PlantSimpleResponseDto of(Plant plant, PhotoResponseDto photo) {
+    public static PlantSimpleResponseDto of(Plant plant, String photoUrl) {
         return PlantSimpleResponseDto.builder()
                 .plantId(plant.getId())
-                .photo(photo)
+                .photoUrl(photoUrl)
                 .build();
     }
 }

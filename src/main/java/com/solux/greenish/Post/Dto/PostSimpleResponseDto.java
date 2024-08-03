@@ -14,15 +14,15 @@ public class PostSimpleResponseDto {
     private String title;
     private LocalDate createdAt;
     private String content;
-    private PhotoResponseDto photo;
+    private String photoUrl;
 
-    public static PostSimpleResponseDto of(Post post, PhotoResponseDto photo) {
+    public static PostSimpleResponseDto of(Post post, String photoUrl) {
         return PostSimpleResponseDto.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .createdAt(post.getCreatedAt())
                 .content(post.getContent())
-                .photo(photo)
+                .photoUrl(photoUrl)
                 .build();
     }
 }

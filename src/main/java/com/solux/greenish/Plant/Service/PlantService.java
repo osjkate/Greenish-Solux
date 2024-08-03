@@ -6,6 +6,7 @@ import com.solux.greenish.Calendar.Dto.WateringResponseDto;
 import com.solux.greenish.Calendar.Repository.WateringRepository;
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Photo.Dto.PhotoResponseDto;
+import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
@@ -71,11 +72,13 @@ public class PlantService {
 
         // post들 조회
         List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
+                .stream().map((post) -> PostSimpleResponseDto.of(post,
+                        photoService.getCDNUrl("post/" + plant.getId(),
+                                plant.getPhoto().getFileName()))).toList();
 
-        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto());
+        String plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());
 
-        return PlantDetailResponseDto.of(plant, posts, plantPhoto);
+        return PlantDetailResponseDto.of(plant, posts, plantPhotoUrl);
     }
 
     // 식물의 물주기 모두 조회
@@ -92,7 +95,8 @@ public class PlantService {
     @Transactional(readOnly = true)
     public List<PlantSimpleResponseDto> getAllPlant() {
         List<Plant> plants = plantRepository.findAll();
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto()))).toList();
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant,
+                photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
     }
 
     // user_id 로 전체 식물 조회
@@ -102,7 +106,8 @@ public class PlantService {
 
         List<Plant> plants = plantRepository.findByUserId(user.getId());
 
-        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant, photoService.getFilePath(plant.getPhoto()))).toList();
+        return plants.stream().map((plant) -> PlantSimpleResponseDto.of(plant,
+                photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
 
     }
 
@@ -112,11 +117,12 @@ public class PlantService {
         Plant plant = plantRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("해당 식물을 찾을 수 없습니다. "));
         List<PostSimpleResponseDto> posts = plant.getPosts()
-                .stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
+                .stream().map((post) -> PostSimpleResponseDto.of(post,
+                        photoService.getCDNUrl("post/" + plant.getId(), plant.getPhoto().getFileName()))).toList();
 
-        PhotoResponseDto plantPhoto = photoService.getFilePath(plant.getPhoto());
+        String plantPhotoUrl = photoService.getCDNUrl("plant/" + plant.getId(), plant.getPhoto().getFileName());;
 
-        return PlantDetailResponseDto.of(plant, posts, plantPhoto);
+        return PlantDetailResponseDto.of(plant, posts, plantPhotoUrl);
     }
 
     // 식물 생성
@@ -142,7 +148,10 @@ public class PlantService {
         PhotoResponseDto photo = null;
 
         if (request.getFileName() != null) {
-            photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
+            photo = photoService.createPhoto(PresignedUrlDto.builder()
+                    .fileName(request.getFileName())
+                    .prefix("plant/" + plant.getId())
+                    .build());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
         }
         createAndSaveWateringSchedules(plant, wateringCycle);
@@ -184,15 +193,21 @@ public class PlantService {
 
         int waterCycle = getWateringCycle(getUser(plant.getUser().getId()), apiPlant);
 
-        String photoPath = plant.getPhoto().getPhotoPath();
         PhotoResponseDto photo = null;
         String newFileName = request.getFileName();
         String currentFileName = plant.getPhoto().getFileName();
         if (newFileName != null && !newFileName.equals(currentFileName)) {
             photoService.deletePhoto(plant.getPhoto());
-            photo = photoService.generatePreSignedDto(plant.getId(), request.getFileName());
+            photo = photoService.createPhoto(PresignedUrlDto.builder()
+                    .fileName(request.getFileName())
+                    .prefix("plant/" + plant.getId())
+                    .build());
             plant.updatePhoto(getPhoto(photo.getPhotoId()));
-        } else photo = photoService.getFilePath(plant.getPhoto());
+        } else {
+            photo = PhotoResponseDto.builder()
+                    .photoId(plant.getPhoto().getId())
+                    .url(null).build();
+        }
 
         plant.update(request.getName(), request.getAge(), request.isAlarm(),
                 waterCycle, apiPlant);
@@ -215,11 +230,5 @@ public class PlantService {
         Plant plant = getPlant(id);
         photoService.deletePhoto(plant.getPhoto());
         plantRepository.delete(plant);
-    }
-
-    // TODO : soft delete 나중에 구현
-    @Transactional
-    public void softDeletePlant() {
-
     }
 }

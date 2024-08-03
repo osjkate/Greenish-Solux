@@ -16,16 +16,16 @@ public class PostDetailResponseDto {
     private String title;
     private String content;
     private LocalDate createdAt;
-    private PhotoResponseDto photo;
+    private String photoUrl;
 
-    public static PostDetailResponseDto of(Post post, PhotoResponseDto photo) {
+    public static PostDetailResponseDto of(Post post, String photoUrl) {
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
                 .plantName(post.getPlant().getName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
-                .photo(photo)
+                .photoUrl(photoUrl)
                 .build();
     }
 }

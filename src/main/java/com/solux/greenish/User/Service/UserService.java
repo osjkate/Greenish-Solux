@@ -2,6 +2,7 @@ package com.solux.greenish.User.Service;
 
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Photo.Dto.PhotoResponseDto;
+import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.User.Dto.UserDto.*;
@@ -43,6 +44,7 @@ public class UserService {
         return userRepository.existsByNickname(nickname);
     }
 
+    // 회원 가입
     @Transactional
     public IdResponse signUp(UserRegistDto request) {
         if (isEmailDuplicate(request.getEmail())) {
@@ -56,13 +58,18 @@ public class UserService {
         userRepository.save(user);
 
         if (request.getFileName() != null) {
-            PhotoResponseDto photo = photoService.generatePreSignedDto(user.getId(), request.getFileName());
+
+            PhotoResponseDto photo = photoService.createPhoto(
+                    PresignedUrlDto.builder()
+                            .prefix("user/:" + user.getId())
+                            .fileName(request.getFileName()).build());
             user.updatePhoto(getPhoto(photo.getPhotoId()));
         }
 
         return IdResponse.of(user);
     }
 
+    // 삭제
     @Transactional
     public void deleteAccount(String token) {
         User user = getUserByToken(token);
@@ -70,16 +77,21 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    // 조회
     @Transactional(readOnly = true)
     public UserInfoDto getUserInfo(String token) {
         User user = getUserByToken(token);
-        return UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()));
+        return UserInfoDto.of(user, photoService.getCDNUrl("user/" + user.getId(), user.getPhoto().getFileName()));
     }
 
+    // 모두 조회
     @Transactional(readOnly = true)
     public List<UserInfoDto> getAllUserInfo() {
         return userRepository.findAll().stream()
-                .map((user) -> UserInfoDto.of(user, photoService.getFilePath(user.getPhoto()))).toList();
+                .map((user) ->
+                        UserInfoDto.of(user,
+                                photoService.getCDNUrl("user/" + user.getId(),
+                                        user.getPhoto().getFileName()))).toList();
     }
 
 }

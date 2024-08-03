@@ -2,6 +2,7 @@ package com.solux.greenish.Post.Service;
 
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Photo.Dto.PhotoResponseDto;
+import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.Plant.Domain.Plant;
@@ -59,7 +60,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailResponseDto getPostDetailById(Long id) {
         Post post = findPostById(id);
-        PhotoResponseDto photo = photoService.getFilePath(post.getPhoto());
+        String photo = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
 
         return PostDetailResponseDto.of(post, photo);
     }
@@ -70,14 +71,16 @@ public class PostService {
         List<Post> posts = postRepository.findAllByUserId(
                 findUserByToken(token).getId());
 
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
+        return posts.stream().map((post) -> PostSimpleResponseDto.of(post,
+                photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
     }
 
     // plant id 로 게시물 전체 조회
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getAllPostByPlantId(Long plantId) {
         List<Post> posts = postRepository.findAllByPlantId(plantId);
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
+        return posts.stream().map((post) -> PostSimpleResponseDto.of(post,
+                photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
     }
 
     // 게시물 전체 조회
@@ -85,7 +88,8 @@ public class PostService {
     public List<PostSimpleResponseDto> getAllPost() {
         List<Post> posts = postRepository.findAll();
         return posts.stream()
-                .map((post) -> PostSimpleResponseDto.of(post, photoService.getFilePath(post.getPhoto()))).toList();
+                .map((post) -> PostSimpleResponseDto.of(post,
+                        photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
     }
 
     // 게시물 등록
@@ -98,7 +102,9 @@ public class PostService {
 
         PhotoResponseDto photo = null;
         if (request.getFilename() != null) {
-            photo = photoService.generatePreSignedDto(post.getId(), request.getFilename());
+            photo = photoService.createPhoto(PresignedUrlDto.builder()
+                    .prefix("post/" + post.getId())
+                    .fileName(request.getFilename()).build());
             post.updatePhoto(findPhotoById(photo.getPhotoId()));
         }
 
@@ -116,10 +122,12 @@ public class PostService {
 
         PhotoResponseDto photo = null;
         if (newFileName != null && !newFileName.equals(currentFileName)) {
-            photo = photoService.generatePreSignedDto(post.getId(), newFileName);
+            photoService.deletePhoto(post.getPhoto());
+            photo = photoService.createPhoto(PresignedUrlDto.builder()
+                    .prefix("post/" + post.getId())
+                    .fileName(request.getFileName()).build());
             post.updatePhoto(findPhotoById(photo.getPhotoId()));
         }
-        photo = photoService.generatePreSignedDto(post.getId(), currentFileName);
 
         return PostResponseDto.toDto(post, photo);
     }
