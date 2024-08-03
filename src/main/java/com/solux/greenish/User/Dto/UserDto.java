@@ -61,12 +61,12 @@ public class UserDto {
         private Long id;
         private String nickname;
         private String email;
-        private PhotoResponseDto photo;
+        private String photoUrl;
 
-        public static UserInfoDto of(User user, PhotoResponseDto photo) {
+        public static UserInfoDto of(User user, String photoUrl) {
             return UserInfoDto.builder()
                     .id(user.getId())
-                    .photo(photo)
+                    .photoUrl(photoUrl)
                     .nickname(user.getNickname())
                     .email(user.getEmail())
                     .build();
