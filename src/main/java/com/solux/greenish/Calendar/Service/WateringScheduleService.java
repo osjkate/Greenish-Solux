@@ -6,6 +6,7 @@ import com.solux.greenish.Calendar.Repository.WateringRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -17,7 +18,7 @@ public class WateringScheduleService {
     public void WateringPostpone() {
         List<Watering> waterings = wateringRepository.findAll();
         for (Watering w : waterings) {
-            if (w.getStatus() == Status.PRE) {
+            if (w.getStatus() == Status.PRE && w.getScheduleDate().minusDays(1).isEqual(LocalDate.now())) {
                 wateringService.postponeWatering(w.getId());
             }
         }
