@@ -41,6 +41,7 @@ public class PhotoService {
     // 포토 생성
     @Transactional
     public PhotoResponseDto createPhoto(PresignedUrlDto request) {
+        if (request.getFileName() == null) return null;
         String filePath = createPath(request.getPrefix(), request.getFileName());
         Photo photo = Photo.builder()
                 .fileName(request.getFileName())
@@ -75,6 +76,7 @@ public class PhotoService {
 
     // CDN Url 생성함수
     public String getCDNUrl(String prefix, String imageUrl) {
+        if (prefix == null || imageUrl == null) return null;
         return domain + "/" + prefix + "/" + imageUrl;
     }
 
