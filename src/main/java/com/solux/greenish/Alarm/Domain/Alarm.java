@@ -3,49 +3,56 @@ package com.solux.greenish.Alarm.Domain;
 public class Alarm {
 
     // 전체 알림 설정
-    private boolean allNotificationsEnabled;
+    private boolean all;
 
-    // 개별 설정: 햅틱 모드 및 미리보기
-    private boolean hapticModeEnabled;
-    private boolean previewEnabled;
+    // 개별 설정
+    private boolean hapticMode;
+    private boolean preview;
+    private boolean allPlantWatering;
 
-    // 전체 물주기 알림 설정
-    private boolean wateringNotificationsEnabled;
-    private boolean overallPlantWateringEnabled;
-    private boolean wateringHistoryEnabled;
-
-    // 생성자
+    // 기본 생성자
     public Alarm() {
-        this.allNotificationsEnabled = false;
-        this.hapticModeEnabled = false;
-        this.previewEnabled = false;
-        this.wateringNotificationsEnabled = false;
-        this.overallPlantWateringEnabled = false;
-        this.wateringHistoryEnabled = false;
     }
 
-    // Getter 및 Setter
-    public boolean isAllNotificationsEnabled() {
-        return allNotificationsEnabled;
+    // 전체 필드를 초기화하는 생성자
+    public Alarm(boolean all, boolean hapticMode, boolean preview, boolean allPlantWatering) {
+        this.all = all;
+        this.hapticMode = hapticMode;
+        this.preview = preview;
+        this.allPlantWatering = allPlantWatering;
     }
 
-    public boolean isHapticModeEnabled() {
-        return hapticModeEnabled;
+    // Getter 및 Setter 메서드
+
+    public boolean isAll() {
+        return all;
     }
 
-    public boolean isPreviewEnabled() {
-        return previewEnabled;
+    public void setAll(boolean all) {
+        this.all = all;
     }
 
-    public boolean isWateringNotificationsEnabled() {
-        return wateringNotificationsEnabled;
+    public boolean isHapticMode() {
+        return hapticMode;
     }
 
-    public boolean isOverallPlantWateringEnabled() {
-        return overallPlantWateringEnabled;
+    public void setHapticMode(boolean hapticMode) {
+        this.hapticMode = hapticMode;
     }
 
-    public boolean isWateringHistoryEnabled() {
-        return wateringHistoryEnabled;
+    public boolean isPreview() {
+        return preview;
+    }
+
+    public void setPreview(boolean preview) {
+        this.preview = preview;
+    }
+
+    public boolean isAllPlantWatering() {
+        return allPlantWatering;
+    }
+
+    public void setAllPlantWatering(boolean allPlantWatering) {
+        this.allPlantWatering = allPlantWatering;
     }
 }
