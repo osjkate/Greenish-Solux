@@ -6,6 +6,7 @@ import com.solux.greenish.Photo.Dto.PresignedUrlDto;
 import com.solux.greenish.Photo.Repository.PhotoRepository;
 import com.solux.greenish.Photo.Service.PhotoService;
 import com.solux.greenish.User.Dto.UserDto.*;
+import com.solux.greenish.User.Dto.UserIdResponse;
 import com.solux.greenish.User.Repository.UserRepository;
 import com.solux.greenish.User.Domain.User;
 import com.solux.greenish.login.Jwt.JwtUtil;
@@ -47,7 +48,7 @@ public class UserService {
 
     // 회원 가입
     @Transactional
-    public IdResponse signUp(UserRegistDto request) {
+    public UserIdResponse signUp(UserRegistDto request) {
         if (isEmailDuplicate(request.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 이메일입니다. ");
         }
@@ -58,16 +59,20 @@ public class UserService {
         User user = request.toUser(bCryptPasswordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
+        String url = null;
         if (request.getFileName() != null) {
 
             PhotoResponseDto photo = photoService.createPhoto(
                     PresignedUrlDto.builder()
-                            .prefix("user/:" + user.getId())
+                            .prefix("user/" + user.getId())
                             .fileName(request.getFileName()).build());
             user.updatePhoto(getPhoto(photo.getPhotoId()));
+            url = photo.getUrl();
         }
 
-        return IdResponse.of(user);
+        return UserIdResponse.builder()
+                .userId(user.getId())
+                .imageUrl(url).build();
     }
 
     // 삭제
@@ -101,6 +106,22 @@ public class UserService {
             users.add(UserInfoDto.of(user, imageUrl));
         }
         return users;
+    }
+
+    // 사진 업데이트
+    @Transactional
+    public UserInfoDto updatePhoto(String token, String photoName) {
+        User user = getUserByToken(token);
+
+        String imageUrl = null;
+        if (user.getPhoto() != null || photoName == null || photoName.equals(user.getPhoto().getFileName())) {
+            photoService.deletePhoto(user.getPhoto());
+            PhotoResponseDto photo = photoService.createPhoto(PresignedUrlDto.builder()
+                    .fileName(photoName)
+                    .prefix("user/" + user.getId()).build());
+            imageUrl = photo.getUrl();
+        }
+        return UserInfoDto.of(user, imageUrl);
     }
 
 }

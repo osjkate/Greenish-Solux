@@ -23,7 +23,14 @@ public class UserController {
             @Valid @RequestBody UserRegistDto request
     ) {
         return ResponseEntity.ok().body(
-                new DataResponse<IdResponse>(userService.signUp(request)));
+                new DataResponse<>(userService.signUp(request)));
+    }
+
+    @PutMapping("/update-image")
+    public ResponseEntity<? extends BasicResponse> updateUser(
+            @RequestParam String photoName,
+            @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(new DataResponse<>(userService.updatePhoto(token, photoName)));
     }
 
     // 이메일 중복 확인
