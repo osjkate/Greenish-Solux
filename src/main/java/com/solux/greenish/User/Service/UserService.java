@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -81,17 +82,25 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserInfoDto getUserInfo(String token) {
         User user = getUserByToken(token);
-        return UserInfoDto.of(user, photoService.getCDNUrl("user/" + user.getId(), user.getPhoto().getFileName()));
+        String imageUrl = null;
+        if (user.getPhoto() != null) {
+            imageUrl = photoService.getCDNUrl("user/" + user.getId(), user.getPhoto().getFileName());
+        }
+        return UserInfoDto.of(user, imageUrl);
     }
 
     // 모두 조회
     @Transactional(readOnly = true)
     public List<UserInfoDto> getAllUserInfo() {
-        return userRepository.findAll().stream()
-                .map((user) ->
-                        UserInfoDto.of(user,
-                                photoService.getCDNUrl("user/" + user.getId(),
-                                        user.getPhoto().getFileName()))).toList();
+        List<UserInfoDto> users = new ArrayList<>();
+        List<User> allUsers = userRepository.findAll();
+        for (User user : allUsers) {
+            String imageUrl = null;
+            if (user.getPhoto() != null)
+                imageUrl = photoService.getCDNUrl("user/" + user.getId(), user.getPhoto().getFileName());
+            users.add(UserInfoDto.of(user, imageUrl));
+        }
+        return users;
     }
 
 }
