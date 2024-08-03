@@ -4,12 +4,10 @@ import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.User.Domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+
 
 @Entity @Getter
 @NoArgsConstructor

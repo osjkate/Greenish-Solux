@@ -220,7 +220,7 @@ public class PlantSearchService {
     //필터링시 Entity를 dto로 변환
     //식물번호 사진 유통명만 가지고 있는 리스트 생성을 위함
     public ResponseDtoPlantInfo convertToPlantInfo(ApiPlant apiplant){
-        ResponseDtoPlantInfo  plant=new ResponseDtoPlantInfo();
+        ResponseDtoPlantInfo plant=new ResponseDtoPlantInfo();
         plant.setCntntsSj(apiplant.getDistbNm());
         plant.setCntntsNo(apiplant.getCntntsNo());
         plant.setRtnFileUrl(apiplant.getRtnFileUrl());
@@ -235,7 +235,6 @@ public class PlantSearchService {
 
     //식물 상세정보를 넘기는 메소드
     public ResponseDtoPlantdtl GetPlantDetail(String cntntsNo) throws Exception {
-
         //db이용으로 변경
       ApiPlant plant=apiPlantRepository.findBycntntsNo(cntntsNo);
       if(plant!=null){
