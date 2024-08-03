@@ -139,7 +139,7 @@ public class PlantService {
             throw new IllegalArgumentException("해당 식물 이름이 중복됩니다. ");
         }
 
-        int wateringCycle = getWateringCycle(user, apiPlant);
+        int wateringCycle = apiPlant.getWaterCycle().getCycle();
 
         Plant plant = request.toEntity(user, wateringCycle, apiPlant);
 
@@ -177,12 +177,6 @@ public class PlantService {
         waterings.forEach(wateringRepository::save);
     }
 
-
-    // TODO : 물주기 도출로직
-    public int getWateringCycle(User user, ApiPlant apiPlant) {
-        return 3;
-    }
-
     // 식물 update
     // 물주기도 update 됨
     @Transactional
@@ -191,7 +185,7 @@ public class PlantService {
         Plant plant = getPlant(request.getPlantId());
         ApiPlant apiPlant = getApiPlant(request.getDistbNm());
 
-        int waterCycle = getWateringCycle(getUser(plant.getUser().getId()), apiPlant);
+        int waterCycle = apiPlant.getWaterCycle().getCycle();
 
         PhotoResponseDto photo = null;
         String newFileName = request.getFileName();
