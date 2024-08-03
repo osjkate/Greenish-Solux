@@ -4,6 +4,7 @@ import com.solux.greenish.Environment.Domain.Environment;
 import com.solux.greenish.Photo.Domain.Photo;
 import com.solux.greenish.Plant.Domain.Plant;
 import com.solux.greenish.Post.Domain.Post;
+import com.solux.greenish.ranking.Domain.Ranking;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -57,8 +58,12 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
 
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "user")
+    private Ranking ranking;
+
     public void updatePhoto(Photo photo) {
         this.photo = photo;
     }
+
 }
 
