@@ -8,7 +8,6 @@ import com.solux.greenish.login.Jwt.JwtUtil;
 import com.solux.greenish.ranking.Domain.Ranking;
 import com.solux.greenish.ranking.Dto.RankingDto;
 import com.solux.greenish.ranking.Repository.RankingRepository;
-import com.solux.greenish.ranking.dummy;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -31,6 +31,11 @@ public class dummy {
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final int NAME_LENGTH = 8; // 이름 길이
 
+    @PostConstruct
+    @Transactional
+    public void init() {
+        createDummyUsersAndPosts();
+    }
 
     // 랜덤한 이름 생성 메서드
     private String generateRandomName() {
@@ -63,7 +68,7 @@ public class dummy {
             // 사용자 생성
             User user = User.builder()
                     .role(RoleType.USER)
-                    .email("user"+i+"@example.com")
+                    .email("user10"+i + "@example.com")
                     .nickname(randomName)
                     .password(passwordEncoder.encode("password!")) // 비밀번호 암호화
                     .photo(photo) // 프로필 사진 연결
@@ -91,8 +96,8 @@ public class dummy {
         }
         postRepository.saveAll(posts);
     }
-    //쓰나...?
-    // 데이터 삭제 메서드
+
+    // 더미 데이터 삭제 메서드
     @Transactional
     public void deleteDummyUsersAndPosts() {
         postRepository.deleteAll();
@@ -100,4 +105,3 @@ public class dummy {
         photoRepository.deleteAll();
     }
 }
-
