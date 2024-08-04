@@ -23,8 +23,8 @@ public class PostController {
     // post id로 게시물 상세조회
     @GetMapping("/{post_id}")
     public ResponseEntity<? extends BasicResponse> getPostById(
-            @PathVariable("post_id") Long id) {
-        PostDetailResponseDto postDetail = postService.getPostDetailById(id);
+            @PathVariable("post_id") Long postId) {
+        PostDetailResponseDto postDetail = postService.getPostDetailById(postId);
         return ResponseEntity.ok(new DataResponse<>(postDetail));
 
     }

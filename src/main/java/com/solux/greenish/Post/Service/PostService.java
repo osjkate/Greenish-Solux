@@ -62,7 +62,7 @@ public class PostService {
     public PostDetailResponseDto getPostDetailById(Long id) {
         Post post = findPostById(id);
         String photo = null;
-        if (post.getPhoto() == null) {
+        if (post.getPhoto() != null) {
             photo = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
         }
         return PostDetailResponseDto.of(post, photo);
