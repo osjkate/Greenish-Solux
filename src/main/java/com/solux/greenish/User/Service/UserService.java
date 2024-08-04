@@ -114,12 +114,23 @@ public class UserService {
         User user = getUserByToken(token);
 
         String imageUrl = null;
-        if (user.getPhoto() != null || photoName == null || photoName.equals(user.getPhoto().getFileName())) {
-            photoService.deletePhoto(user.getPhoto());
-            PhotoResponseDto photo = photoService.createPhoto(PresignedUrlDto.builder()
-                    .fileName(photoName)
-                    .prefix("user/" + user.getId()).build());
-            imageUrl = photo.getUrl();
+        if (user.getPhoto() != null) {
+            if (photoName != null && !photoName.equals(user.getPhoto().getFileName())) {
+                photoService.deletePhoto(user.getPhoto());
+                PhotoResponseDto photo = photoService.createPhoto(PresignedUrlDto.builder()
+                        .fileName(photoName)
+                        .prefix("user/" + user.getId()).build());
+                imageUrl = photo.getUrl();
+            } else {
+                imageUrl = user.getPhoto().getFileName();
+            }
+        } else {
+            if (photoName != null) {
+                PhotoResponseDto photo = photoService.createPhoto(PresignedUrlDto.builder()
+                        .fileName(photoName)
+                        .prefix("user/" + user.getId()).build());
+                imageUrl = photo.getUrl();
+            }
         }
         return UserInfoDto.of(user, imageUrl);
     }

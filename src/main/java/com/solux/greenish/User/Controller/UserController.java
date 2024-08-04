@@ -26,9 +26,9 @@ public class UserController {
                 new DataResponse<>(userService.signUp(request)));
     }
 
-    @PutMapping("/update-image")
+    @PutMapping("/update-image/{photoName}")
     public ResponseEntity<? extends BasicResponse> updateUser(
-            @RequestParam String photoName,
+            @PathVariable("photoName") String photoName,
             @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(new DataResponse<>(userService.updatePhoto(token, photoName)));
     }
