@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 
@@ -108,6 +109,6 @@ public class RankingService {
         } else {
             return 2;
         }
-
     }
+
 }
