@@ -79,8 +79,10 @@ public class PostService {
             String image = null;
             if (post.getPhoto() != null) {
                 image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
-                PostSimpleResponseDto.of(post, image);
+
             }
+            response.add(PostSimpleResponseDto.of(post, image));
+
         }
         return response;
     }
@@ -94,8 +96,9 @@ public class PostService {
             String image = null;
             if (post.getPhoto() != null) {
                 image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
-                PostSimpleResponseDto.of(post, image);
             }
+            response.add(PostSimpleResponseDto.of(post, image));
+
         }
         return response;
     }
@@ -109,8 +112,10 @@ public class PostService {
             String image = null;
             if (post.getPhoto() != null) {
                 image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
-                PostSimpleResponseDto.of(post, image);
+
             }
+            response.add(PostSimpleResponseDto.of(post, image));
+
         }
         return response;
     }
