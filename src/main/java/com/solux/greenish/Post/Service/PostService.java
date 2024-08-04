@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,8 +61,10 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailResponseDto getPostDetailById(Long id) {
         Post post = findPostById(id);
-        String photo = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
-
+        String photo = null;
+        if (post.getPhoto() == null) {
+            photo = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
+        }
         return PostDetailResponseDto.of(post, photo);
     }
 
@@ -71,25 +74,45 @@ public class PostService {
         List<Post> posts = postRepository.findAllByUserId(
                 findUserByToken(token).getId());
 
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post,
-                photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+        for (Post post : posts) {
+            String image = null;
+            if (post.getPhoto() != null) {
+                image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
+                PostSimpleResponseDto.of(post, image);
+            }
+        }
+        return response;
     }
 
     // plant id 로 게시물 전체 조회
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getAllPostByPlantId(Long plantId) {
         List<Post> posts = postRepository.findAllByPlantId(plantId);
-        return posts.stream().map((post) -> PostSimpleResponseDto.of(post,
-                photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+        for (Post post : posts) {
+            String image = null;
+            if (post.getPhoto() != null) {
+                image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
+                PostSimpleResponseDto.of(post, image);
+            }
+        }
+        return response;
     }
 
     // 게시물 전체 조회
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getAllPost() {
         List<Post> posts = postRepository.findAll();
-        return posts.stream()
-                .map((post) -> PostSimpleResponseDto.of(post,
-                        photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath()))).toList();
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+        for (Post post : posts) {
+            String image = null;
+            if (post.getPhoto() != null) {
+                image = photoService.getCDNUrl("post/" + post.getId(), post.getPhoto().getPhotoPath());
+                PostSimpleResponseDto.of(post, image);
+            }
+        }
+        return response;
     }
 
     // 게시물 등록
