@@ -91,7 +91,7 @@ public class dummy {
         }
         postRepository.saveAll(posts);
     }
-
+    //쓰나...?
     // 데이터 삭제 메서드
     @Transactional
     public void deleteDummyUsersAndPosts() {
@@ -100,3 +100,4 @@ public class dummy {
         photoRepository.deleteAll();
     }
 }
+
